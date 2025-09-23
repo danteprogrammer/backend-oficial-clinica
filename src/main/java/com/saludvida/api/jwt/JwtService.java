@@ -26,6 +26,9 @@ public class JwtService {
     }
 
     private String getToken(Map<String, Object> extraClaims, UserDetails user) {
+        // Add authorities to the token
+        extraClaims.put("authorities", user.getAuthorities());
+
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

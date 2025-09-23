@@ -32,15 +32,10 @@ public class SecurityConfig {
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(authRequest -> authRequest
                                                 .requestMatchers("/api/auth/**").permitAll()
-                                                .requestMatchers("/api/consultorios")
-                                                .hasAnyRole("ADMIN", "USER", "DOCTOR") // Roles específicos
-                                                .requestMatchers(HttpMethod.GET, "/api/consultorios")
-                                                .hasAnyRole("USER", "ADMIN", "DOCTOR")
-                                                .requestMatchers(HttpMethod.POST, "/api/consultorios").hasRole("ADMIN")
-                                                .requestMatchers(HttpMethod.PUT, "/api/consultorios").hasRole("ADMIN")
-                                                .requestMatchers(HttpMethod.DELETE, "/api/consultorios")
-                                                .hasRole("ADMIN")
                                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                                .requestMatchers("/api/turnos/**").permitAll()
+                                                .requestMatchers("/api/pacientes/**").permitAll()
+                                                .requestMatchers("/static/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .sessionManagement(sessionManager -> sessionManager
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -52,10 +47,24 @@ public class SecurityConfig {
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                configuration.setAllowedHeaders(Arrays.asList("*"));
+                // Permitir múltiples orígenes para desarrollo
+                configuration.setAllowedOrigins(Arrays.asList(
+                        "http://localhost:4200",
+                        "http://127.0.0.1:4200",
+                        "http://localhost:3000",
+                        "http://127.0.0.1:3000"
+                ));
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+                configuration.setAllowedHeaders(Arrays.asList(
+                        "Authorization",
+                        "Content-Type",
+                        "Accept",
+                        "Origin",
+                        "Access-Control-Request-Method",
+                        "Access-Control-Request-Headers"
+                ));
                 configuration.setAllowCredentials(true);
+                configuration.setMaxAge(3600L); // Cache preflight por 1 hora
 
                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                 source.registerCorsConfiguration("/**", configuration);

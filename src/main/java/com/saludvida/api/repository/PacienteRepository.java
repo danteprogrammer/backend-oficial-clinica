@@ -15,4 +15,6 @@ public interface PacienteRepository extends JpaRepository<Paciente, Integer> {
             Paciente.Estado estado1, String nombres, Paciente.Estado estado2, String apellidos, Pageable pageable);
 
     Page<Paciente> findByEstado(Paciente.Estado estado, Pageable pageable);
+
+    Page<Paciente> findByNombresContainingIgnoreCaseOrApellidosContainingIgnoreCase(String nombres, String apellidos, Pageable pageable);
 }

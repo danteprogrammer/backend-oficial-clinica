@@ -1,6 +1,7 @@
 package com.saludvida.api.service;
 
 import com.saludvida.api.dto.TurnoDto;
+import com.saludvida.api.dto.TurnoResponseDto;
 import com.saludvida.api.model.Consultorio;
 import com.saludvida.api.model.Paciente;
 import com.saludvida.api.model.Turno;
@@ -8,14 +9,15 @@ import com.saludvida.api.repository.ConsultorioRepository;
 import com.saludvida.api.repository.PacienteRepository;
 import com.saludvida.api.repository.TurnoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,107 +27,125 @@ public class TurnoService {
     private final PacienteRepository pacienteRepository;
     private final ConsultorioRepository consultorioRepository;
 
+    @Transactional(readOnly = true)
+    public List<TurnoResponseDto> obtenerTodosLosTurnos() {
+        return turnoRepository.findAll().stream()
+                .map(TurnoResponseDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<TurnoResponseDto> obtenerTurnosPorPaciente(Integer pacienteId) {
+        return turnoRepository.findByPacienteIdPaciente(pacienteId).stream()
+                .map(TurnoResponseDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<TurnoResponseDto> obtenerTurnosPorConsultorio(Integer consultorioId) {
+        return turnoRepository.findByConsultorioIdConsultorio(consultorioId).stream()
+                .map(TurnoResponseDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<TurnoResponseDto> obtenerTurnosPorEstado(Turno.Estado estado) {
+        return turnoRepository.findByEstado(estado).stream()
+                .map(TurnoResponseDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
-    public Turno registrarTurno(TurnoDto turnoDTO) {
-        // Validar que el DTO no sea nulo
-        if (turnoDTO == null) {
-            throw new IllegalArgumentException("Los datos del turno no pueden ser nulos");
-        }
+    public TurnoResponseDto asignarTurno(TurnoDto turnoDto) {
+        // Validar que el paciente existe
+        Paciente paciente = pacienteRepository.findById(turnoDto.getPacienteId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Paciente no encontrado con ID: " + turnoDto.getPacienteId()));
 
-        // Validar campos requeridos
-        if (turnoDTO.getPacienteId() == null || turnoDTO.getConsultorioId() == null) {
-            throw new IllegalArgumentException("El ID del paciente y consultorio son requeridos");
-        }
+        // Validar que el consultorio existe
+        Consultorio consultorio = consultorioRepository.findById(turnoDto.getConsultorioId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Consultorio no encontrado con ID: " + turnoDto.getConsultorioId()));
 
-        if (turnoDTO.getFecha() == null || turnoDTO.getHora() == null) {
-            throw new IllegalArgumentException("La fecha y hora del turno son requeridas");
-        }
-
-        if (turnoDTO.getMotivo() == null || turnoDTO.getMotivo().trim().isEmpty()) {
-            throw new IllegalArgumentException("El motivo del turno es requerido");
-        }
-
-        // Validar que la fecha no sea en el pasado
-        LocalDateTime fechaHoraTurno = LocalDateTime.of(turnoDTO.getFecha(), turnoDTO.getHora());
-        if (fechaHoraTurno.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("No se pueden crear turnos en fechas pasadas");
-        }
-
-        // Validar horario de atención (8:00 - 18:00)
-        LocalTime hora = turnoDTO.getHora();
-        if (hora.isBefore(LocalTime.of(8, 0)) || hora.isAfter(LocalTime.of(18, 0))) {
-            throw new IllegalArgumentException("El horario del turno debe estar entre las 8:00 y las 18:00");
-        }
-
-        Optional<Paciente> pacienteOptional = pacienteRepository.findById(turnoDTO.getPacienteId());
-        Optional<Consultorio> consultorioOptional = consultorioRepository.findById(turnoDTO.getConsultorioId());
-
-        if (pacienteOptional.isEmpty()) {
-            throw new RuntimeException("Paciente no encontrado con ID: " + turnoDTO.getPacienteId());
-        }
-
-        if (consultorioOptional.isEmpty()) {
-            throw new RuntimeException("Consultorio no encontrado con ID: " + turnoDTO.getConsultorioId());
-        }
-
-        Consultorio consultorio = consultorioOptional.get();
-
-        // Verificar que el consultorio esté disponible
+        // Validar que el consultorio esté disponible
         if (consultorio.getEstado() != Consultorio.Estado.Disponible) {
-            throw new IllegalStateException("El consultorio no está disponible para nuevos turnos");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "El consultorio no está disponible");
         }
 
-        // Verificar que no haya conflicto de horarios en ese consultorio
-        List<Turno> turnosExistentes = turnoRepository.findByConsultorioAndFechaAndHora(
-            consultorio, turnoDTO.getFecha(), turnoDTO.getHora());
+        // Validar que no haya conflicto de horario
+        turnoRepository.findConflictingTurno(turnoDto.getFecha(), turnoDto.getHora(), turnoDto.getConsultorioId())
+                .ifPresent(conflictingTurno -> {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT,
+                            "Ya existe un turno en ese horario para el consultorio");
+                });
 
-        if (!turnosExistentes.isEmpty()) {
-            throw new IllegalStateException("Ya existe un turno programado para este consultorio en la fecha y hora especificada");
-        }
+        // Crear el turno
+        Turno turno = Turno.builder()
+                .paciente(paciente)
+                .consultorio(consultorio)
+                .fecha(turnoDto.getFecha())
+                .hora(turnoDto.getHora())
+                .motivo(turnoDto.getMotivo())
+                .observaciones(turnoDto.getObservaciones())
+                .estado(Turno.Estado.Pendiente)
+                .build();
 
-        Turno turno = new Turno();
-        turno.setPaciente(pacienteOptional.get());
-        turno.setConsultorio(consultorio);
-        turno.setFecha(turnoDTO.getFecha());
-        turno.setHora(turnoDTO.getHora());
-        turno.setMotivo(turnoDTO.getMotivo());
-        turno.setObservaciones(turnoDTO.getObservaciones());
-        turno.setEstado(Turno.Estado.Pendiente);
-
-        return turnoRepository.save(turno);
-    }
-
-    public List<Turno> obtenerTurnosProximos() {
-        LocalDateTime now = LocalDateTime.now();
-        // Obtiene turnos desde hoy en adelante y los ordena por fecha y hora
-        return turnoRepository.findByFechaAfterOrderByFechaAscHoraAsc(LocalDate.now());
+        Turno turnoGuardado = turnoRepository.save(turno);
+        return TurnoResponseDto.fromEntity(turnoGuardado);
     }
 
     @Transactional
-    public void cambiarEstadoTurno(Integer id, String nuevoEstado) {
-        // Validar que el estado no sea nulo o vacío
-        if (nuevoEstado == null || nuevoEstado.trim().isEmpty()) {
-            throw new IllegalArgumentException("El estado del turno no puede ser nulo o vacío");
-        }
-
-        Turno turno = turnoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+    public TurnoResponseDto cambiarEstadoTurno(Integer turnoId, String nuevoEstado) {
+        Turno turno = turnoRepository.findById(turnoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Turno no encontrado con ID: " + turnoId));
 
         try {
             Turno.Estado estado = Turno.Estado.valueOf(nuevoEstado);
             turno.setEstado(estado);
-            turnoRepository.save(turno);
+
+            // Si el turno pasa a "EnProceso", marcar consultorio como ocupado
+            if (estado == Turno.Estado.EnProceso) {
+                turno.getConsultorio().setEstado(Consultorio.Estado.Ocupado);
+                consultorioRepository.save(turno.getConsultorio());
+            }
+
+            // Si el turno se completa o cancela, liberar consultorio
+            if (estado == Turno.Estado.Completado || estado == Turno.Estado.Cancelado) {
+                turno.getConsultorio().setEstado(Consultorio.Estado.Disponible);
+                consultorioRepository.save(turno.getConsultorio());
+            }
+
+            Turno turnoActualizado = turnoRepository.save(turno);
+            return TurnoResponseDto.fromEntity(turnoActualizado);
+
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Estado inválido: " + nuevoEstado +
-                ". Estados válidos: " + List.of(Turno.Estado.values()));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Estado no válido: " + nuevoEstado);
         }
     }
 
     @Transactional
-    public void cancelarTurno(Integer id) {
-        Turno turno = turnoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+    public void cancelarTurno(Integer turnoId) {
+        Turno turno = turnoRepository.findById(turnoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Turno no encontrado con ID: " + turnoId));
+
         turno.setEstado(Turno.Estado.Cancelado);
+
+        // Liberar consultorio
+        turno.getConsultorio().setEstado(Consultorio.Estado.Disponible);
+        consultorioRepository.save(turno.getConsultorio());
+
         turnoRepository.save(turno);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TurnoResponseDto> obtenerTurnosPorFecha(LocalDate fecha) {
+        return turnoRepository.findAll().stream()
+                .filter(turno -> turno.getFecha().equals(fecha))
+                .map(TurnoResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }

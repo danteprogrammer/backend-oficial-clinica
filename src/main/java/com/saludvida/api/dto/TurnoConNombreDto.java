@@ -11,8 +11,8 @@ import java.time.LocalTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TurnoDto {
-    private Integer pacienteId;
+public class TurnoConNombreDto {
+    private String pacienteNombre; // Nombre completo del paciente (nombres + apellidos)
     private Integer consultorioId;
     private LocalDate fecha;
     private LocalTime hora;

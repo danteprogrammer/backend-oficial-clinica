@@ -17,15 +17,6 @@ public class PacienteController {
 
     private final PacienteService pacienteService;
 
-    @GetMapping
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'RECEPCIONISTA', 'MEDICO')")
-    public ResponseEntity<Page<Paciente>> obtenerTodosLosPacientes(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        PageRequest pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(pacienteService.buscarPacientesActivos("", "nombre", pageable));
-    }
-
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'RECEPCIONISTA')")
     public ResponseEntity<Paciente> registrarPaciente(@RequestBody Paciente paciente) {

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -103,5 +104,24 @@ public class PacienteService {
         dto.setEnfermedadesCronicas(historia.getEnfermedadesCronicas());
 
         return dto;
+    }
+
+    public Page<Paciente> listarTodosLosPacientes(Pageable pageable) {
+        return pacienteRepository.findAll(pageable);
+    }
+
+    public Page<Paciente> buscarPacientesPorNombre(String nombre, Pageable pageable) {
+        return pacienteRepository.findByNombresContainingIgnoreCaseOrApellidosContainingIgnoreCase(
+                nombre, nombre, pageable);
+    }
+
+    public java.util.List<Paciente> buscarPacientesPorNombreSimple(String nombre) {
+        return pacienteRepository.findByNombresContainingIgnoreCaseOrApellidosContainingIgnoreCase(
+                nombre, nombre, Pageable.unpaged()).getContent();
+    }
+
+    public Paciente buscarPacientePorId(Integer id) {
+        return pacienteRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado con ID: " + id));
     }
 }

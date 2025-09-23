@@ -1,6 +1,5 @@
 package com.saludvida.api.repository;
 
-import com.saludvida.api.model.Consultorio;
 import com.saludvida.api.model.Turno;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,27 +9,23 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TurnoRepository extends JpaRepository<Turno, Integer> {
-    // Método para encontrar turnos por una fecha posterior a la fecha actual y ordenarlos
-    List<Turno> findByFechaAfterOrderByFechaAscHoraAsc(LocalDate fecha);
 
-    // Método para verificar conflictos de horarios en un consultorio específico
-    List<Turno> findByConsultorioAndFechaAndHora(Consultorio consultorio, LocalDate fecha, LocalTime hora);
+    List<Turno> findByPacienteIdPaciente(Integer pacienteId);
 
-    // Método para encontrar turnos por consultorio y fecha
-    List<Turno> findByConsultorioAndFecha(Consultorio consultorio, LocalDate fecha);
+    List<Turno> findByConsultorioIdConsultorio(Integer consultorioId);
 
-    // Método para encontrar turnos por paciente
-    List<Turno> findByPacienteIdOrderByFechaDescHoraDesc(Integer pacienteId);
-
-    // Método para encontrar turnos por estado
     List<Turno> findByEstado(Turno.Estado estado);
 
-    // Método para contar turnos activos en un consultorio para una fecha
-    @Query("SELECT COUNT(t) FROM Turno t WHERE t.consultorio = :consultorio AND t.fecha = :fecha " +
-           "AND t.estado IN ('Pendiente', 'Confirmado', 'EnProceso')")
-    long countTurnosActivosPorConsultorioYFecha(@Param("consultorio") Consultorio consultorio,
-                                               @Param("fecha") LocalDate fecha);
+    @Query("SELECT t FROM Turno t WHERE t.consultorio.idConsultorio = :consultorioId AND t.fecha = :fecha AND t.estado != 'Cancelado'")
+    List<Turno> findTurnosByConsultorioAndFecha(@Param("consultorioId") Integer consultorioId, @Param("fecha") LocalDate fecha);
+
+    @Query("SELECT t FROM Turno t WHERE t.fecha = :fecha AND t.hora = :hora AND t.consultorio.idConsultorio = :consultorioId AND t.estado != 'Cancelado'")
+    Optional<Turno> findConflictingTurno(@Param("fecha") LocalDate fecha, @Param("hora") LocalTime hora, @Param("consultorioId") Integer consultorioId);
+
+    @Query("SELECT t FROM Turno t WHERE t.estado = 'EnProceso' AND t.consultorio.idConsultorio = :consultorioId")
+    Optional<Turno> findActiveTurnoByConsultorio(@Param("consultorioId") Integer consultorioId);
 }
