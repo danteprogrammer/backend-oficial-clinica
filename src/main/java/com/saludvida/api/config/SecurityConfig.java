@@ -31,11 +31,14 @@ public class SecurityConfig {
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(authRequest -> authRequest
+                                                // Los endpoints de autenticación son públicos
                                                 .requestMatchers("/api/auth/**").permitAll()
+
+                                                // Permite las peticiones OPTIONS de CORS que hace el navegador antes de
+                                                // un POST o PUT
                                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                                .requestMatchers("/api/turnos/**").permitAll()
-                                                .requestMatchers("/api/pacientes/**").permitAll()
-                                                .requestMatchers("/static/**").permitAll()
+
+                                                // Cualquier otra petición requiere que el usuario esté autenticado
                                                 .anyRequest().authenticated())
                                 .sessionManagement(sessionManager -> sessionManager
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -47,24 +50,10 @@ public class SecurityConfig {
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
-                // Permitir múltiples orígenes para desarrollo
-                configuration.setAllowedOrigins(Arrays.asList(
-                        "http://localhost:4200",
-                        "http://127.0.0.1:4200",
-                        "http://localhost:3000",
-                        "http://127.0.0.1:3000"
-                ));
-                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-                configuration.setAllowedHeaders(Arrays.asList(
-                        "Authorization",
-                        "Content-Type",
-                        "Accept",
-                        "Origin",
-                        "Access-Control-Request-Method",
-                        "Access-Control-Request-Headers"
-                ));
+                configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                configuration.setAllowedHeaders(Arrays.asList("*"));
                 configuration.setAllowCredentials(true);
-                configuration.setMaxAge(3600L); // Cache preflight por 1 hora
 
                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                 source.registerCorsConfiguration("/**", configuration);
