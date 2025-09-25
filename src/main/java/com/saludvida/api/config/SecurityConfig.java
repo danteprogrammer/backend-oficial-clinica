@@ -31,14 +31,9 @@ public class SecurityConfig {
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(authRequest -> authRequest
-                                                // Los endpoints de autenticación son públicos
+
                                                 .requestMatchers("/api/auth/**").permitAll()
-
-                                                // Permite las peticiones OPTIONS de CORS que hace el navegador antes de
-                                                // un POST o PUT
                                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                                                // Cualquier otra petición requiere que el usuario esté autenticado
                                                 .anyRequest().authenticated())
                                 .sessionManagement(sessionManager -> sessionManager
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

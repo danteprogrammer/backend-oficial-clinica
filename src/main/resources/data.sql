@@ -18,22 +18,22 @@ INSERT IGNORE INTO `consultorios` (`id_consultorio`, `numero`, `piso`, `descripc
 (6, '302', 3, 'Consultorio de Oftalmología', 'Disponible');
 
 -- Datos de prueba para pacientes
-INSERT IGNORE INTO `pacientes` (`id_paciente`, `nombres`, `apellidos`, `dni`, `fecha_nacimiento`, `telefono`, `email`, `direccion`, `estado`) VALUES
-(1, 'Juan', 'Pérez', '12345678', '1985-05-15', '555-0101', 'juan.perez@email.com', 'Calle Ficticia 123', 'ACTIVO'),
-(2, 'María', 'González', '87654321', '1990-08-22', '555-0102', 'maria.gonzalez@email.com', 'Avenida Principal 456', 'ACTIVO'),
-(3, 'Carlos', 'Rodríguez', '11111111', '1978-12-10', '555-0103', 'carlos.rodriguez@email.com', 'Plaza Central 789', 'ACTIVO'),
-(4, 'Ana', 'Martínez', '55555555', '1995-03-30', '555-0104', 'ana.martinez@email.com', 'Barrio Norte 321', 'ACTIVO'),
-(5, 'Pedro', 'López', '99999999', '1982-07-18', '555-0105', 'pedro.lopez@email.com', 'Zona Sur 654', 'ACTIVO'),
-(6, 'Laura', 'García', '77777777', '1998-11-25', '555-0106', 'laura.garcia@email.com', 'Centro Histórico 987', 'ACTIVO');
+INSERT IGNORE INTO `paciente` (`id_paciente`, `nombres`, `apellidos`, `dni`, `fecha_nacimiento`, `telefono`, `email`, `direccion`, `estado`, `sexo`) VALUES
+(1, 'Juan', 'Pérez', '10234567', '1985-05-15', '961234567', 'juan.perez@email.com', 'Calle Ficticia 123', 'ACTIVO', 'Masculino'),
+(2, 'María', 'González', '20876543', '1990-08-22', '987654321', 'maria.gonzalez@email.com', 'Avenida Principal 456', 'ACTIVO', 'Femenino'),
+(3, 'Carlos', 'Rodríguez', '51720384', '1978-12-10', '954318207', 'carlos.rodriguez@email.com', 'Plaza Central 789', 'ACTIVO', 'Masculino'),
+(4, 'Ana', 'Martínez', '33091827', '1995-03-30', '965402118', 'ana.martinez@email.com', 'Barrio Norte 321', 'ACTIVO', 'Femenino'),
+(5, 'Pedro', 'López', '87450123', '1982-07-18', '999770123', 'pedro.lopez@email.com', 'Zona Sur 654', 'ACTIVO', 'Masculino'),
+(6, 'Laura', 'García', '66023489', '1998-11-25', '912345678', 'laura.garcia@email.com', 'Centro Histórico 987', 'ACTIVO', 'Femenino');
 
 -- Datos de prueba para médicos
 INSERT IGNORE INTO `medicos` (`id_medico`, `dni`, `nombres`, `apellidos`, `sexo`, `especialidad`, `telefono`, `email`, `licencia_medica`, `estado`) VALUES
-(1, '11223344', 'Dr. Roberto', 'Sánchez', 'Masculino', 'Cardiología', '555-0201', 'roberto.sanchez@clinica.com', 'LIC001', 'Activo'),
-(2, '22334455', 'Dra. Carmen', 'López', 'Femenino', 'Dermatología', '555-0202', 'carmen.lopez@clinica.com', 'LIC002', 'Activo'),
-(3, '33445566', 'Dr. Miguel', 'Torres', 'Masculino', 'Pediatría', '555-0203', 'miguel.torres@clinica.com', 'LIC003', 'Activo'),
-(4, '44556677', 'Dra. Patricia', 'Ramírez', 'Femenino', 'Traumatología', '555-0204', 'patricia.ramirez@clinica.com', 'LIC004', 'Activo'),
-(5, '55667788', 'Dr. Alejandro', 'Morales', 'Masculino', 'Ginecología', '555-0205', 'alejandro.morales@clinica.com', 'LIC005', 'Activo'),
-(6, '66778899', 'Dra. Isabel', 'Fernández', 'Femenino', 'Oftalmología', '555-0206', 'isabel.fernandez@clinica.com', 'LIC006', 'Activo');
+(1, '40321578', 'Dr. Roberto', 'Sánchez', 'Masculino', 'Cardiología', '976543210', 'roberto.sanchez@clinica.com', 'LIC001', 'Activo'),
+(2, '72904561', 'Dra. Carmen', 'López', 'Femenino', 'Dermatología', '957012468', 'carmen.lopez@clinica.com', 'LIC002', 'Activo'),
+(3, '55678902', 'Dr. Miguel', 'Torres', 'Masculino', 'Pediatría', '948601357', 'miguel.torres@clinica.com', 'LIC003', 'Activo'),
+(4, '31415926', 'Dra. Patricia', 'Ramírez', 'Femenino', 'Traumatología', '959887766', 'patricia.ramirez@clinica.com', 'LIC004', 'Activo'),
+(5, '31415937', 'Dr. Alejandro', 'Morales', 'Masculino', 'Ginecología', '991122334', 'alejandro.morales@clinica.com', 'LIC005', 'Activo'),
+(6, '31415985', 'Dra. Isabel', 'Fernández', 'Femenino', 'Oftalmología', '923456789', 'isabel.fernandez@clinica.com', 'LIC006', 'Activo');
 
 -- Datos de prueba para turnos
 INSERT IGNORE INTO `turnos` (`id_turno`, `id_paciente`, `id_consultorio`, `fecha`, `hora`, `motivo`, `observaciones`, `estado`) VALUES
