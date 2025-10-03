@@ -43,13 +43,11 @@ INSERT IGNORE INTO `medicos` (`id_medico`, `dni`, `nombres`, `apellidos`, `sexo`
 (5, '31415937', 'Dr. Alejandro', 'Morales', 'Masculino', 'Ginecología', '991122334', 'alejandro.morales@clinica.com', 'LIC005', 'Activo'),
 (6, '31415985', 'Dra. Isabel', 'Fernández', 'Femenino', 'Oftalmología', '923456789', 'isabel.fernandez@clinica.com', 'LIC006', 'Activo');
 
--- Datos de prueba para turnos
 INSERT IGNORE INTO `turnos` (`id_turno`, `id_paciente`, `id_consultorio`, `fecha`, `hora`, `motivo`, `observaciones`, `estado`) VALUES
 (1, 1, 1, '2025-12-25', '10:00:00', 'Control de rutina', 'Paciente con hipertensión controlada', 'Pendiente'),
 (2, 2, 4, '2025-12-26', '14:30:00', 'Consulta prenatal', 'Primer trimestre', 'Confirmado'),
 (3, 3, 5, '2025-12-27', '09:15:00', 'Revisión de fractura', 'Control post-operatorio', 'EnProceso');
 
--- Datos de prueba para citas
 INSERT IGNORE INTO `citas` (`id_cita`, `id_paciente`, `id_medico`, `id_consultorio`, `fecha`, `hora`, `motivo`, `observaciones`, `estado`) VALUES
 (1, 1, 1, 1, '2025-12-25', '10:00:00', 'Control de rutina', 'Paciente con hipertensión controlada', 'Pendiente'),
 (2, 2, 4, 4, '2025-12-26', '14:30:00', 'Consulta prenatal', 'Primer trimestre', 'Confirmada'),
@@ -57,3 +55,9 @@ INSERT IGNORE INTO `citas` (`id_cita`, `id_paciente`, `id_medico`, `id_consultor
 (4, 4, 2, 2, '2025-12-28', '11:00:00', 'Consulta dermatológica', 'Revisión de lunar sospechoso', 'Pendiente'),
 (5, 5, 3, 3, '2025-12-29', '15:30:00', 'Control pediátrico', 'Vacunación de rutina', 'Confirmada'),
 (6, 6, 6, 6, '2025-12-30', '08:45:00', 'Examen de la vista', 'Control anual de oftalmología', 'Pendiente');
+
+INSERT IGNORE INTO `seguromedico` (`id_seguro`, `id_paciente`, `nombre_aseguradora`, `numero_poliza`, `cobertura`) VALUES
+(1, 1, 'Seguros Pacífico', 'POL-10234567', 'Plan Completo'),
+(2, 2, 'Rimac Seguros', 'POL-20876543', 'Plan Ambulatorio'),
+(3, 3, 'La Positiva', 'POL-51720384', 'Plan Oncológico'),
+(4, 4, 'Mapfre', 'POL-33091827', 'Plan Básico');
