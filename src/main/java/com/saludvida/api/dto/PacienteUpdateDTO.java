@@ -16,4 +16,7 @@ public class PacienteUpdateDTO {
     private String alergias;
     private String antecedentes;
     private String enfermedadesCronicas;
+    private String nombreAseguradora;
+    private String numeroPoliza;
+    private String cobertura;
 }

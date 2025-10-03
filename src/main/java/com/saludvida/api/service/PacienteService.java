@@ -3,8 +3,10 @@ package com.saludvida.api.service;
 import com.saludvida.api.dto.PacienteUpdateDTO;
 import com.saludvida.api.model.HistoriaClinica;
 import com.saludvida.api.model.Paciente;
+import com.saludvida.api.model.SeguroMedico;
 import com.saludvida.api.repository.HistoriaClinicaRepository;
 import com.saludvida.api.repository.PacienteRepository;
+import com.saludvida.api.repository.SeguroMedicoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,7 @@ public class PacienteService {
 
     private final PacienteRepository pacienteRepository;
     private final HistoriaClinicaRepository historiaClinicaRepository;
+    private final SeguroMedicoRepository seguroMedicoRepository; // <-- Inyección del nuevo repositorio
 
     @Transactional
     public Paciente registrarNuevoPaciente(Paciente paciente) {
@@ -59,6 +62,7 @@ public class PacienteService {
         Paciente paciente = pacienteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado con ID: " + id));
 
+        // Actualizar datos personales
         paciente.setNombres(datos.getNombres());
         paciente.setApellidos(datos.getApellidos());
         paciente.setSexo(datos.getSexo());
@@ -66,17 +70,28 @@ public class PacienteService {
         paciente.setDireccion(datos.getDireccion());
         paciente.setTelefono(datos.getTelefono());
         paciente.setEmail(datos.getEmail());
+        pacienteRepository.save(paciente);
 
+        // Actualizar historia clínica
         HistoriaClinica historia = historiaClinicaRepository.findByPaciente_IdPaciente(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Historia Clínica no encontrada para el paciente con ID: " + id));
-
         historia.setAlergias(datos.getAlergias());
         historia.setAntecedentes(datos.getAntecedentes());
         historia.setEnfermedadesCronicas(datos.getEnfermedadesCronicas());
-
         historiaClinicaRepository.save(historia);
-        return pacienteRepository.save(paciente);
+
+        // --- LÓGICA PARA GUARDAR O ACTUALIZAR SEGURO ---
+        if (datos.getNombreAseguradora() != null && !datos.getNombreAseguradora().isEmpty()) {
+            SeguroMedico seguro = seguroMedicoRepository.findByPaciente_IdPaciente(id).orElse(new SeguroMedico());
+            seguro.setPaciente(paciente);
+            seguro.setNombreAseguradora(datos.getNombreAseguradora());
+            seguro.setNumeroPoliza(datos.getNumeroPoliza());
+            seguro.setCobertura(datos.getCobertura());
+            seguroMedicoRepository.save(seguro);
+        }
+
+        return paciente;
     }
 
     public PacienteUpdateDTO obtenerPacienteParaModificar(Integer id) {
@@ -84,9 +99,11 @@ public class PacienteService {
                 .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado con ID: " + id));
 
         HistoriaClinica historia = historiaClinicaRepository.findByPaciente_IdPaciente(id)
-                .orElse(new HistoriaClinica()); 
+                .orElse(new HistoriaClinica());
+        SeguroMedico seguro = seguroMedicoRepository.findByPaciente_IdPaciente(id).orElse(new SeguroMedico());
 
         PacienteUpdateDTO dto = new PacienteUpdateDTO();
+        // Datos Personales
         dto.setNombres(paciente.getNombres());
         dto.setApellidos(paciente.getApellidos());
         dto.setSexo(paciente.getSexo());
@@ -94,10 +111,14 @@ public class PacienteService {
         dto.setDireccion(paciente.getDireccion());
         dto.setTelefono(paciente.getTelefono());
         dto.setEmail(paciente.getEmail());
-
+        // Datos de Historia
         dto.setAlergias(historia.getAlergias());
         dto.setAntecedentes(historia.getAntecedentes());
         dto.setEnfermedadesCronicas(historia.getEnfermedadesCronicas());
+        // Datos de Seguro
+        dto.setNombreAseguradora(seguro.getNombreAseguradora());
+        dto.setNumeroPoliza(seguro.getNumeroPoliza());
+        dto.setCobertura(seguro.getCobertura());
 
         return dto;
     }
