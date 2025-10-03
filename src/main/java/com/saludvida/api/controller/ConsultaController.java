@@ -15,7 +15,7 @@ public class ConsultaController {
     private final ConsultaService consultaService;
 
     @PostMapping("/historia/{idHistoriaClinica}")
-    @PreAuthorize("hasAuthority('MEDICO')")
+    @PreAuthorize("hasAuthority('MEDICO') or hasAuthority('ADMIN')")
     public ResponseEntity<Consulta> registrarConsulta(@PathVariable Integer idHistoriaClinica, @RequestBody Consulta consulta) {
         return ResponseEntity.ok(consultaService.registrarConsulta(consulta, idHistoriaClinica));
     }
