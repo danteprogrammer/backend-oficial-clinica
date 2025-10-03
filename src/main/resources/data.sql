@@ -17,14 +17,25 @@ INSERT IGNORE INTO `consultorios` (`id_consultorio`, `numero`, `piso`, `descripc
 (5, '301', 3, 'Consultorio de Ginecología', 'Disponible'),
 (6, '302', 3, 'Consultorio de Oftalmología', 'Disponible');
 
--- Datos de prueba para pacientes
+-- Datos de prueba para pacientes (Corregido 'ACTIVO' a 'Activo' para coincidir con el Enum de Java)
 INSERT IGNORE INTO `paciente` (`id_paciente`, `nombres`, `apellidos`, `dni`, `fecha_nacimiento`, `telefono`, `email`, `direccion`, `estado`, `sexo`) VALUES
-(1, 'Juan', 'Pérez', '10234567', '1985-05-15', '961234567', 'juan.perez@email.com', 'Calle Ficticia 123', 'ACTIVO', 'Masculino'),
-(2, 'María', 'González', '20876543', '1990-08-22', '987654321', 'maria.gonzalez@email.com', 'Avenida Principal 456', 'ACTIVO', 'Femenino'),
-(3, 'Carlos', 'Rodríguez', '51720384', '1978-12-10', '954318207', 'carlos.rodriguez@email.com', 'Plaza Central 789', 'ACTIVO', 'Masculino'),
-(4, 'Ana', 'Martínez', '33091827', '1995-03-30', '965402118', 'ana.martinez@email.com', 'Barrio Norte 321', 'ACTIVO', 'Femenino'),
-(5, 'Pedro', 'López', '87450123', '1982-07-18', '999770123', 'pedro.lopez@email.com', 'Zona Sur 654', 'ACTIVO', 'Masculino'),
-(6, 'Laura', 'García', '66023489', '1998-11-25', '912345678', 'laura.garcia@email.com', 'Centro Histórico 987', 'ACTIVO', 'Femenino');
+(1, 'Juan', 'Pérez', '10234567', '1985-05-15', '961234567', 'juan.perez@email.com', 'Calle Ficticia 123', 'Activo', 'Masculino'),
+(2, 'María', 'González', '20876543', '1990-08-22', '987654321', 'maria.gonzalez@email.com', 'Avenida Principal 456', 'Activo', 'Femenino'),
+(3, 'Carlos', 'Rodríguez', '51720384', '1978-12-10', '954318207', 'carlos.rodriguez@email.com', 'Plaza Central 789', 'Activo', 'Masculino'),
+(4, 'Ana', 'Martínez', '33091827', '1995-03-30', '965402118', 'ana.martinez@email.com', 'Barrio Norte 321', 'Activo', 'Femenino'),
+(5, 'Pedro', 'López', '87450123', '1982-07-18', '999770123', 'pedro.lopez@email.com', 'Zona Sur 654', 'Activo', 'Masculino'),
+(6, 'Laura', 'García', '66023489', '1998-11-25', '912345678', 'laura.garcia@email.com', 'Centro Histórico 987', 'Activo', 'Femenino');
+
+--
+-- CORRECCIÓN: Nombres de columnas cambiados a snake_case para coincidir con la creación de Hibernate
+--
+INSERT IGNORE INTO `historiaclinica` (`id_historia_clinica`, `fecha_creacion`, `id_paciente`, `antecedentes`, `alergias`, `enfermedades_cronicas`) VALUES
+(1, CURDATE(), 1, NULL, 'Polvo', 'Hipertensión'),
+(2, CURDATE(), 2, 'Cirugía de apéndice', NULL, NULL),
+(3, CURDATE(), 3, NULL, 'Penicilina', NULL),
+(4, CURDATE(), 4, NULL, NULL, 'Asma'),
+(5, CURDATE(), 5, NULL, NULL, NULL),
+(6, CURDATE(), 6, 'Fractura de brazo', 'Maní', NULL);
 
 -- Datos de prueba para médicos
 INSERT IGNORE INTO `medicos` (`id_medico`, `dni`, `nombres`, `apellidos`, `sexo`, `especialidad`, `telefono`, `email`, `licencia_medica`, `estado`) VALUES

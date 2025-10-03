@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Data
 @Builder
@@ -36,4 +38,9 @@ public class HistoriaClinica {
     @OneToOne
     @JoinColumn(name = "idPaciente", referencedColumnName = "idPaciente")
     private Paciente paciente;
+
+    @OneToMany(mappedBy = "historiaClinica", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Consulta> consultas;
+
 }

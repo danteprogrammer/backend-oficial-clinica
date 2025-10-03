@@ -39,12 +39,10 @@ public class PacienteService {
         return nuevoPaciente;
     }
 
+    // MÉTODO CORREGIDO Y SIMPLIFICADO
     public Page<Paciente> buscarPacientesActivos(String termino, String filtro, Pageable pageable) {
-        if ("DNI".equalsIgnoreCase(filtro)) {
-            return pacienteRepository.findByEstadoAndDniContaining(Paciente.Estado.Activo, termino, pageable);
-        }
-        return pacienteRepository.findByEstadoAndNombresContainingIgnoreCaseOrEstadoAndApellidosContainingIgnoreCase(
-                Paciente.Estado.Activo, termino, Paciente.Estado.Activo, termino, pageable);
+        // El parámetro 'filtro' se ignora. La búsqueda ahora es universal.
+        return pacienteRepository.findByEstadoAndTermino(Paciente.Estado.Activo, termino, pageable);
     }
 
     public Page<Paciente> buscarPacientesInactivos(Pageable pageable) {
