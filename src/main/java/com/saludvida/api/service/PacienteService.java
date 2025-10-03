@@ -39,9 +39,7 @@ public class PacienteService {
         return nuevoPaciente;
     }
 
-    // MÉTODO CORREGIDO Y SIMPLIFICADO
     public Page<Paciente> buscarPacientesActivos(String termino, String filtro, Pageable pageable) {
-        // El parámetro 'filtro' se ignora. La búsqueda ahora es universal.
         return pacienteRepository.findByEstadoAndTermino(Paciente.Estado.Activo, termino, pageable);
     }
 

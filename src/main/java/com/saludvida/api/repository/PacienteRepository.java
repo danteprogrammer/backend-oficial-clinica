@@ -13,12 +13,10 @@ public interface PacienteRepository extends JpaRepository<Paciente, Integer> {
 
     Optional<Paciente> findByDni(String dni);
 
-    // Método de búsqueda mejorado que busca en DNI, nombres y apellidos
     @Query("SELECT p FROM Paciente p WHERE p.estado = :estado AND (p.dni LIKE %:termino% OR UPPER(p.nombres) LIKE UPPER(CONCAT('%', :termino, '%')) OR UPPER(p.apellidos) LIKE UPPER(CONCAT('%', :termino, '%')))")
     Page<Paciente> findByEstadoAndTermino(@Param("estado") Paciente.Estado estado, @Param("termino") String termino,
             Pageable pageable);
 
-    // Métodos anteriores (se conservan por si se usan en otras partes)
     Page<Paciente> findByEstadoAndDniContaining(Paciente.Estado estado, String dni, Pageable pageable);
 
     Page<Paciente> findByEstadoAndNombresContainingIgnoreCaseOrEstadoAndApellidosContainingIgnoreCase(
