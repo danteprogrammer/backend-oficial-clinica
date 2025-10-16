@@ -27,6 +27,9 @@ public class Consultorio {
     @Column(name = "descripcion")
     private String descripcion;
 
+    @Column(name = "especialidad") 
+    private String especialidad;   
+
     @Enumerated(EnumType.STRING)
     @Column(name = "estado")
     private Estado estado;

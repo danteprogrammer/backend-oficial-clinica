@@ -1,6 +1,8 @@
 package com.saludvida.api.service;
 
+import com.saludvida.api.model.Horario;
 import com.saludvida.api.model.Medico;
+import com.saludvida.api.repository.HorarioRepository;
 import com.saludvida.api.repository.MedicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +23,7 @@ import java.util.Optional;
 public class MedicoService {
 
     private final MedicoRepository medicoRepository;
+    private final HorarioRepository horarioRepository;
 
     @Transactional(readOnly = true)
     public List<Medico> obtenerTodosLosMedicos() {
@@ -37,6 +43,33 @@ public class MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosPorEspecialidad(String especialidad) {
         return medicoRepository.findByEspecialidad(especialidad);
+    }
+
+@Transactional(readOnly = true)
+    public Map<String, List<String>> obtenerHorarioMedico(Integer id) {
+        List<Horario> horarios = horarioRepository.findByMedicoIdMedico(id);
+        Map<String, List<String>> calendario = new LinkedHashMap<>();
+        LocalDate hoy = LocalDate.now();
+        int duracionCita = 30; // Duración de cada cita en minutos
+
+        // Generar disponibilidad para los próximos 15 días
+        for (int i = 0; i < 15; i++) {
+            LocalDate fecha = hoy.plusDays(i);
+            for (Horario horario : horarios) {
+                if (horario.getDiaSemana() == fecha.getDayOfWeek()) {
+                    List<String> horasDisponibles = new ArrayList<>();
+                    LocalTime horaActual = horario.getHoraInicio();
+                    while (horaActual.isBefore(horario.getHoraFin())) {
+                        horasDisponibles.add(horaActual.toString());
+                        horaActual = horaActual.plusMinutes(duracionCita);
+                    }
+                    if (!horasDisponibles.isEmpty()) {
+                        calendario.put(fecha.toString(), horasDisponibles);
+                    }
+                }
+            }
+        }
+        return calendario;
     }
 
     @Transactional(readOnly = true)
@@ -148,18 +181,4 @@ public class MedicoService {
     public List<String> obtenerEspecialidades() {
         return medicoRepository.findDistinctEspecialidades();
     }
-
-    @Transactional(readOnly = true)
-    public Map<String, List<String>> obtenerHorarioMedico(Integer id) {
-        // Simulación de horario: Un médico atiende los próximos 7 días de 9 a 12 pm.
-        // En una implementación real, esto vendría de la base de datos.
-        Map<String, List<String>> horario = new java.util.HashMap<>();
-        LocalDate hoy = LocalDate.now();
-        for (int i = 1; i <= 7; i++) {
-            String fecha = hoy.plusDays(i).toString();
-            horario.put(fecha, List.of("09:00", "09:30", "10:00", "10:30", "11:00", "11:30"));
-        }
-        return horario;
-    }
-
 }

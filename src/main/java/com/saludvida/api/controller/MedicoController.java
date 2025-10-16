@@ -41,7 +41,7 @@ public class MedicoController {
         try {
             Optional<Medico> medico = medicoService.obtenerMedicoPorId(id);
             return medico.map(ResponseEntity::ok)
-                        .orElse(ResponseEntity.notFound().build());
+                    .orElse(ResponseEntity.notFound().build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -194,7 +194,7 @@ public class MedicoController {
     }
 
     /**
-     * Obtiene el horario de un médico por ID (simulado)
+     * Obtiene el horario disponible de un médico por ID
      */
     @GetMapping("/{id}/horario")
     public ResponseEntity<Map<String, List<String>>> getHorarioMedico(@PathVariable Integer id) {

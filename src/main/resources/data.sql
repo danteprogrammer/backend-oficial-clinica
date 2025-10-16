@@ -8,14 +8,13 @@ INSERT IGNORE INTO `usuarios` (`id_usuario`, `nombre_usuario`, `clave`, `estado`
 INSERT IGNORE INTO `usuarios` (`id_usuario`, `nombre_usuario`, `clave`, `estado`, `id_rol`) VALUES
 (2, 'recepcionista', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 2);
 
--- Datos de prueba para consultorios
-INSERT IGNORE INTO `consultorios` (`id_consultorio`, `numero`, `piso`, `descripcion`, `estado`) VALUES
-(1, '101', 1, 'Consultorio de Cardiología', 'Disponible'),
-(2, '102', 1, 'Consultorio de Dermatología', 'Disponible'),
-(3, '201', 2, 'Consultorio de Pediatría', 'Ocupado'),
-(4, '202', 2, 'Consultorio de Traumatología', 'Mantenimiento'),
-(5, '301', 3, 'Consultorio de Ginecología', 'Disponible'),
-(6, '302', 3, 'Consultorio de Oftalmología', 'Disponible');
+INSERT IGNORE INTO `consultorios` (`id_consultorio`, `numero`, `piso`, `descripcion`, `especialidad`, `estado`) VALUES
+(1, '101', 1, 'Consultorio de Cardiología', 'Cardiología', 'Disponible'),
+(2, '102', 1, 'Consultorio de Dermatología', 'Dermatología', 'Disponible'),
+(3, '201', 2, 'Consultorio de Pediatría', 'Pediatría', 'Disponible'),
+(4, '202', 2, 'Consultorio de Traumatología', 'Traumatología', 'Mantenimiento'),
+(5, '301', 3, 'Consultorio de Ginecología', 'Ginecología', 'Disponible'),
+(6, '302', 3, 'Consultorio de Oftalmología', 'Oftalmología', 'Disponible');
 
 INSERT IGNORE INTO `paciente` (`id_paciente`, `nombres`, `apellidos`, `dni`, `fecha_nacimiento`, `telefono`, `email`, `direccion`, `estado`, `sexo`) VALUES
 (1, 'Juan', 'Pérez', '10234567', '1985-05-15', '961234567', 'juan.perez@email.com', 'Calle Ficticia 123', 'Activo', 'Masculino'),
@@ -42,6 +41,17 @@ INSERT IGNORE INTO `medicos` (`id_medico`, `dni`, `nombres`, `apellidos`, `sexo`
 (4, '31415926', 'Dra. Patricia', 'Ramírez', 'Femenino', 'Traumatología', '959887766', 'patricia.ramirez@clinica.com', 'LIC004', 'Activo'),
 (5, '31415937', 'Dr. Alejandro', 'Morales', 'Masculino', 'Ginecología', '991122334', 'alejandro.morales@clinica.com', 'LIC005', 'Activo'),
 (6, '31415985', 'Dra. Isabel', 'Fernández', 'Femenino', 'Oftalmología', '923456789', 'isabel.fernandez@clinica.com', 'LIC006', 'Activo');
+
+-- Insertar horarios para los médicos
+INSERT IGNORE INTO `horarios` (`id_medico`, `dia_semana`, `hora_inicio`, `hora_fin`) VALUES
+(1, 'MONDAY', '09:00:00', '13:00:00'), -- Dr. Sanchez (Cardiología) Lunes AM
+(1, 'WEDNESDAY', '09:00:00', '13:00:00'), -- Dr. Sanchez (Cardiología) Miércoles AM
+(2, 'TUESDAY', '14:00:00', '18:00:00'),  -- Dra. López (Dermatología) Martes PM
+(2, 'THURSDAY', '14:00:00', '18:00:00'), -- Dra. López (Dermatología) Jueves PM
+(3, 'FRIDAY', '08:00:00', '12:00:00'),   -- Dr. Torres (Pediatría) Viernes AM
+(4, 'MONDAY', '15:00:00', '19:00:00'),  -- Dra. Ramírez (Traumatología) Lunes PM
+(5, 'TUESDAY', '09:00:00', '13:00:00'),  -- Dr. Morales (Ginecología) Martes AM
+(6, 'WEDNESDAY', '10:00:00', '14:00:00');-- Dra. Fernández (Oftalmología) Miércoles
 
 INSERT IGNORE INTO `turnos` (`id_turno`, `id_paciente`, `id_consultorio`, `fecha`, `hora`, `motivo`, `observaciones`, `estado`) VALUES
 (1, 1, 1, '2025-12-25', '10:00:00', 'Control de rutina', 'Paciente con hipertensión controlada', 'Pendiente'),

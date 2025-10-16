@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface CitaRepository extends JpaRepository<Cita, Integer> {
@@ -16,4 +17,6 @@ public interface CitaRepository extends JpaRepository<Cita, Integer> {
     Page<Cita> findByFecha(LocalDate fecha, Pageable pageable);
 
     List<Cita> findByEstado(Cita.Estado estado);
+
+    List<Cita> findByFechaAndHora(LocalDate fecha, LocalTime hora);
 }
