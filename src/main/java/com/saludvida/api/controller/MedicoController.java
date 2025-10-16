@@ -182,4 +182,27 @@ public class MedicoController {
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
+
+    @GetMapping("/especialidades")
+    public ResponseEntity<List<String>> getEspecialidades() {
+        try {
+            List<String> especialidades = medicoService.obtenerEspecialidades();
+            return ResponseEntity.ok(especialidades);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Obtiene el horario de un médico por ID (simulado)
+     */
+    @GetMapping("/{id}/horario")
+    public ResponseEntity<Map<String, List<String>>> getHorarioMedico(@PathVariable Integer id) {
+        try {
+            Map<String, List<String>> horario = medicoService.obtenerHorarioMedico(id);
+            return ResponseEntity.ok(horario);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

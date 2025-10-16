@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -141,4 +143,23 @@ public class MedicoService {
         medico.setEstado(nuevoEstado);
         return medicoRepository.save(medico);
     }
+
+    @Transactional(readOnly = true)
+    public List<String> obtenerEspecialidades() {
+        return medicoRepository.findDistinctEspecialidades();
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, List<String>> obtenerHorarioMedico(Integer id) {
+        // Simulación de horario: Un médico atiende los próximos 7 días de 9 a 12 pm.
+        // En una implementación real, esto vendría de la base de datos.
+        Map<String, List<String>> horario = new java.util.HashMap<>();
+        LocalDate hoy = LocalDate.now();
+        for (int i = 1; i <= 7; i++) {
+            String fecha = hoy.plusDays(i).toString();
+            horario.put(fecha, List.of("09:00", "09:30", "10:00", "10:30", "11:00", "11:30"));
+        }
+        return horario;
+    }
+
 }

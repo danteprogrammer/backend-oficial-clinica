@@ -3,6 +3,8 @@ package com.saludvida.api.controller;
 import com.saludvida.api.dto.PacienteUpdateDTO;
 import com.saludvida.api.model.Paciente;
 import com.saludvida.api.service.PacienteService;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +30,7 @@ public class PacienteController {
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'RECEPCIONISTA')")
-    public ResponseEntity<Paciente> registrarPaciente(@RequestBody Paciente paciente) {
+    public ResponseEntity<Paciente> registrarPaciente(@Valid @RequestBody Paciente paciente) {
         return ResponseEntity.ok(pacienteService.registrarNuevoPaciente(paciente));
     }
 

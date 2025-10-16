@@ -61,4 +61,19 @@ public class CitaService {
     public List<Cita> listarCitasPorEstado(Estado estado) {
         return citaRepository.findByEstado(estado);
     }
+
+    @Transactional
+    public Cita actualizarCita(Integer id, Cita citaActualizada) {
+        Cita citaExistente = obtenerCitaPorId(id);
+        
+        // Actualizamos los campos que pueden cambiar
+        citaExistente.setMedico(citaActualizada.getMedico());
+        citaExistente.setFecha(citaActualizada.getFecha());
+        citaExistente.setHora(citaActualizada.getHora());
+        citaExistente.setEstado(citaActualizada.getEstado());
+        // El paciente y el consultorio no deberían cambiar en una reagendación simple.
+        // Si se quisiera cambiar consultorio, se añadiría aquí.
+        
+        return citaRepository.save(citaExistente);
+    }
 }

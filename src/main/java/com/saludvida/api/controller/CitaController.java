@@ -65,4 +65,9 @@ public class CitaController {
                 citaService.buscarCitasPorFecha(java.time.LocalDate.parse(fecha), PageRequest.of(page, size))
         );
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Cita> actualizarCita(@PathVariable Integer id, @RequestBody Cita cita) {
+        return ResponseEntity.ok(citaService.actualizarCita(id, cita));
+    }
 }
