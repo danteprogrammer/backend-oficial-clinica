@@ -19,4 +19,10 @@ public interface CitaRepository extends JpaRepository<Cita, Integer> {
     List<Cita> findByEstado(Cita.Estado estado);
 
     List<Cita> findByFechaAndHora(LocalDate fecha, LocalTime hora);
+
+    List<Cita> findByPacienteIdPacienteAndEstadoPagoAndFecha(Integer idPaciente, Cita.EstadoPago estadoPago,
+            LocalDate fecha);
+
+    // AÑADE ESTE MÉTODO
+    List<Cita> findByPacienteIdPacienteAndEstadoPago(Integer idPaciente, Cita.EstadoPago estadoPago);
 }

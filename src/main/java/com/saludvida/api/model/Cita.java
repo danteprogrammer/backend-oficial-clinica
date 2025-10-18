@@ -46,11 +46,22 @@ public class Cita {
     @Column(name = "observaciones")
     private String observaciones;
 
+    @Column(name = "tiene_seguro") 
+    private Boolean tieneSeguro; 
+
     @Enumerated(EnumType.STRING)
     @Column(name = "estado")
     private Estado estado;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado_pago")
+    private EstadoPago estadoPago;
+
     public enum Estado {
         Pendiente, Confirmada, EnProceso, Completada, Cancelada
+    }
+
+    public enum EstadoPago {
+        PENDIENTE, PAGADO
     }
 }

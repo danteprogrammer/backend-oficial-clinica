@@ -64,7 +64,9 @@ private final CitaRepository citaRepository;
             throw new RuntimeException("No hay consultorios de " + especialidad + " disponibles para la fecha y hora seleccionada.");
         }
 
+        cita.setTieneSeguro(cita.getTieneSeguro());
         cita.setEstado(Estado.Pendiente);
+        cita.setEstadoPago(Cita.EstadoPago.PENDIENTE); 
         return citaRepository.save(cita);
     }
     
@@ -76,6 +78,7 @@ private final CitaRepository citaRepository;
         citaExistente.setFecha(citaActualizada.getFecha());
         citaExistente.setHora(citaActualizada.getHora());
         citaExistente.setEstado(citaActualizada.getEstado());
+        citaExistente.setTieneSeguro(citaActualizada.getTieneSeguro());
         
         // Lógica para re-asignar consultorio si la fecha/hora cambia
         if (!citaExistente.getFecha().equals(citaActualizada.getFecha()) || !citaExistente.getHora().equals(citaActualizada.getHora())) {

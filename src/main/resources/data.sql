@@ -1,12 +1,17 @@
 INSERT IGNORE INTO `roles` (`id_rol`, `nombre`, `descripcion`) VALUES
 (1, 'ADMIN', 'Administrador del sistema con todos los permisos'),
 (2, 'RECEPCIONISTA', 'Usuario de recepción para gestionar pacientes y citas'),
-(3, 'MEDICO', 'Usuario médico para registrar consultas y diagnósticos');
+(3, 'MEDICO', 'Usuario médico para registrar consultas y diagnósticos'),
+(4, 'CAJA', 'Usuario para gestionar facturación y pagos');
 
 INSERT IGNORE INTO `usuarios` (`id_usuario`, `nombre_usuario`, `clave`, `estado`, `id_rol`) VALUES
 (1, 'admin', '$2b$12$tVebN1WpmhtD48TQDi7W1ea1dNYOF2iig/OAa4sClnHvu4w.Ygqo6', 'ACTIVO', 1);
 INSERT IGNORE INTO `usuarios` (`id_usuario`, `nombre_usuario`, `clave`, `estado`, `id_rol`) VALUES
 (2, 'recepcionista', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 2);
+INSERT IGNORE INTO `usuarios` (`id_usuario`, `nombre_usuario`, `clave`, `estado`, `id_rol`) VALUES
+(3, 'medico', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 3);
+INSERT IGNORE INTO `usuarios` (`id_usuario`, `nombre_usuario`, `clave`, `estado`, `id_rol`) VALUES
+(4, 'caja', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 4);
 
 INSERT IGNORE INTO `consultorios` (`id_consultorio`, `numero`, `piso`, `descripcion`, `especialidad`, `estado`) VALUES
 (1, '101', 1, 'Consultorio de Cardiología', 'Cardiología', 'Disponible'),
@@ -15,6 +20,15 @@ INSERT IGNORE INTO `consultorios` (`id_consultorio`, `numero`, `piso`, `descripc
 (4, '202', 2, 'Consultorio de Traumatología', 'Traumatología', 'Mantenimiento'),
 (5, '301', 3, 'Consultorio de Ginecología', 'Ginecología', 'Disponible'),
 (6, '302', 3, 'Consultorio de Oftalmología', 'Oftalmología', 'Disponible');
+
+-- TARIFARIO DE CONSULTAS POR ESPECIALIDAD
+INSERT IGNORE INTO `tarifario` (`especialidad`, `precio`) VALUES
+('Cardiología', 150.00),
+('Dermatología', 120.00),
+('Pediatría', 100.00),
+('Traumatología', 130.00),
+('Ginecología', 140.00),
+('Oftalmología', 110.00);
 
 INSERT IGNORE INTO `paciente` (`id_paciente`, `nombres`, `apellidos`, `dni`, `fecha_nacimiento`, `telefono`, `email`, `direccion`, `estado`, `sexo`) VALUES
 (1, 'Juan', 'Pérez', '10234567', '1985-05-15', '961234567', 'juan.perez@email.com', 'Calle Ficticia 123', 'Activo', 'Masculino'),
