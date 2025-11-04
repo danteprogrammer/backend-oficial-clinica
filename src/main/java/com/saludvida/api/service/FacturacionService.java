@@ -43,6 +43,7 @@ public class FacturacionService {
 
         return new CitaParaFacturacionDto(
                 cita.getIdCita(),
+                cita.getPaciente().getIdPaciente(),
                 cita.getPaciente().getNombres(),
                 cita.getPaciente().getApellidos(),
                 cita.getPaciente().getDni(),

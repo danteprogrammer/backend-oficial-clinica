@@ -11,6 +11,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class CitaParaFacturacionDto {
     private Integer idCita;
+    private Integer idPaciente;
     private String nombresPaciente;
     private String apellidosPaciente;
     private String dniPaciente;
