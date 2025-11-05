@@ -70,6 +70,17 @@ public class SecurityConfig {
 
                                                 .requestMatchers("/api/consultas/**").hasAuthority("MEDICO")
 
+                                                // --- NUEVAS REGLAS DE LABORATORIO ---
+                                                .requestMatchers("/api/laboratorio/ordenar").hasAuthority("MEDICO")
+                                                .requestMatchers("/api/laboratorio/historia/**").hasAuthority("MEDICO")
+                                                .requestMatchers("/api/laboratorio/pendientes")
+                                                .hasAuthority("LABORATORIO")
+                                                .requestMatchers("/api/laboratorio/*/estado")
+                                                .hasAuthority("LABORATORIO")
+                                                .requestMatchers("/api/laboratorio/*/resultados")
+                                                .hasAuthority("LABORATORIO")
+                                                // --- FIN NUEVAS REGLAS ---
+
                                                 // --- REGLAS DE ADMIN (al final) ---
                                                 .requestMatchers("/api/consultorios/**").hasAuthority("ADMIN")
                                                 // Regla general de /api/medicos/ para ADMIN

@@ -17,7 +17,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Table(name = "historiaclinica")
 public class HistoriaClinica {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idHistoriaClinica")
@@ -42,5 +41,9 @@ public class HistoriaClinica {
     @OneToMany(mappedBy = "historiaClinica", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Consulta> consultas;
+
+    @OneToMany(mappedBy = "historiaClinica", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<OrdenLaboratorio> ordenesLaboratorio;
 
 }
