@@ -35,7 +35,7 @@ public class PacienteController {
     }
 
     @GetMapping("/activos")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'RECEPCIONISTA', 'MEDICO')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'RECEPCIONISTA', 'MEDICO', 'TRIAJE')")
     public ResponseEntity<Page<Paciente>> buscarPacientesActivos(
             @RequestParam(defaultValue = "") String termino,
             @RequestParam(defaultValue = "nombre") String filtro,

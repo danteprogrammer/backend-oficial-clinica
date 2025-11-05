@@ -16,7 +16,7 @@ public class HistoriaClinicaController {
     private final HistoriaClinicaRepository historiaClinicaRepository;
 
     @GetMapping("/paciente/{idPaciente}")
-    @PreAuthorize("hasAnyAuthority('MEDICO', 'ADMIN', 'RECEPCIONISTA')")
+    @PreAuthorize("hasAnyAuthority('MEDICO', 'ADMIN', 'RECEPCIONISTA', 'TRIAJE')")
     public ResponseEntity<HistoriaClinica> obtenerHistoriaPorPacienteId(@PathVariable Integer idPaciente) {
         HistoriaClinica historia = historiaClinicaRepository.findByPaciente_IdPaciente(idPaciente)
                 .orElseThrow(() -> new EntityNotFoundException("No se encontró historia clínica para el paciente con ID: " + idPaciente));
