@@ -40,14 +40,20 @@ public class SecurityConfig {
 
                                                 // /api/pacientes/activos (Usado por RECEPCIONISTA, TRIAJE y MEDICO)
                                                 .requestMatchers("/api/pacientes/activos")
-                                                .hasAnyAuthority("RECEPCIONISTA", "TRIAJE", "MEDICO") // <-- MODIFICADO
+                                                .hasAnyAuthority("RECEPCIONISTA", "TRIAJE", "MEDICO")
 
-                                                // /api/medicos/ (Reglas específicas de RECEPCIONISTA)
-                                                .requestMatchers("/api/medicos/especialidades")
+                                                // --- INICIO DE CAMBIOS: /api/medicos/ (Reglas específicas de
+                                                // RECEPCIONISTA - SOLO LECTURA) ---
+                                                .requestMatchers(HttpMethod.GET, "/api/medicos/especialidades") // <--
+                                                                                                                // MODIFICADO
                                                 .hasAuthority("RECEPCIONISTA")
-                                                .requestMatchers("/api/medicos/especialidad/**")
+                                                .requestMatchers(HttpMethod.GET, "/api/medicos/especialidad/**") // <--
+                                                                                                                 // MODIFICADO
                                                 .hasAuthority("RECEPCIONISTA")
-                                                .requestMatchers("/api/medicos/*/horario").hasAuthority("RECEPCIONISTA")
+                                                .requestMatchers(HttpMethod.GET, "/api/medicos/*/horario") // <--
+                                                                                                           // MODIFICADO
+                                                .hasAuthority("RECEPCIONISTA")
+                                                // --- FIN DE CAMBIOS ---
 
                                                 // /api/historias/ (Usado por varios roles)
                                                 .requestMatchers("/api/historias/paciente/**")
@@ -65,8 +71,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/seguros/**").hasAuthority("CAJA")
 
                                                 // /api/triajes/ (Usado por TRIAJE y MEDICO)
-                                                .requestMatchers("/api/triajes/**").hasAnyAuthority("TRIAJE", "MEDICO") // <--
-                                                                                                                        // MODIFICADO
+                                                .requestMatchers("/api/triajes/**").hasAnyAuthority("TRIAJE", "MEDICO")
 
                                                 .requestMatchers("/api/consultas/**").hasAuthority("MEDICO")
 
@@ -85,7 +90,9 @@ public class SecurityConfig {
 
                                                 // --- REGLAS DE ADMIN (al final) ---
                                                 .requestMatchers("/api/consultorios/**").hasAuthority("ADMIN")
-                                                // Regla general de /api/medicos/ para ADMIN
+
+                                                // Regla general de /api/medicos/ para ADMIN (CRUD completo)
+                                                // Esta regla APLICA para POST, PUT, DELETE, etc.
                                                 .requestMatchers("/api/medicos/**").hasAuthority("ADMIN")
 
                                                 // Cualquier otra ruta requiere autenticación
