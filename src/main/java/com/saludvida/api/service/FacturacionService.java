@@ -10,6 +10,7 @@ import com.saludvida.api.repository.TarifarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,40 +20,56 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FacturacionService {
-    private final PacienteRepository pacienteRepository;
-    private final CitaRepository citaRepository;
-    private final TarifarioRepository tarifarioRepository;
+        private final PacienteRepository pacienteRepository;
+        private final CitaRepository citaRepository;
+        private final TarifarioRepository tarifarioRepository;
 
-    public List<CitaParaFacturacionDto> obtenerCitasPendientesPorDni(String dni) {
-        Paciente paciente = pacienteRepository.findByDni(dni)
-                .orElseThrow(() -> new EntityNotFoundException("No se encontró paciente con DNI: " + dni));
+        public List<CitaParaFacturacionDto> obtenerCitasPendientesPorDni(String dni) {
+                Paciente paciente = pacienteRepository.findByDni(dni)
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "No se encontró paciente con DNI: " + dni));
 
-        List<Cita> citas = citaRepository.findByPacienteIdPacienteAndEstadoPago(
-                paciente.getIdPaciente(), Cita.EstadoPago.PENDIENTE);
+                List<Cita> citas = citaRepository.findByPacienteIdPacienteAndEstadoPago(
+                                paciente.getIdPaciente(), Cita.EstadoPago.PENDIENTE);
 
-        return citas.stream()
-                .map(this::convertirACitaParaFacturacionDto)
-                .collect(Collectors.toList());
-    }
+                return citas.stream()
+                                .map(this::convertirACitaParaFacturacionDto)
+                                .collect(Collectors.toList());
+        }
 
-    private CitaParaFacturacionDto convertirACitaParaFacturacionDto(Cita cita) {
-        String especialidad = cita.getMedico().getEspecialidad();
-        BigDecimal precio = tarifarioRepository.findByEspecialidad(especialidad)
-                .map(Tarifario::getPrecio)
-                .orElse(BigDecimal.ZERO);
+        private CitaParaFacturacionDto convertirACitaParaFacturacionDto(Cita cita) {
+                String especialidad = cita.getMedico().getEspecialidad();
+                BigDecimal precio = tarifarioRepository.findByEspecialidad(especialidad)
+                                .map(Tarifario::getPrecio)
+                                .orElse(BigDecimal.ZERO);
 
-        return new CitaParaFacturacionDto(
-                cita.getIdCita(),
-                cita.getPaciente().getIdPaciente(),
-                cita.getPaciente().getNombres(),
-                cita.getPaciente().getApellidos(),
-                cita.getPaciente().getDni(),
-                especialidad,
-                "Dr. " + cita.getMedico().getNombres() + " " + cita.getMedico().getApellidos(),
-                cita.getFecha(),
-                cita.getHora(),
-                cita.getTieneSeguro(),
-                precio,
-                cita.getEstadoPago());
-    }
+                String consultorioNum = cita.getConsultorio() != null ? cita.getConsultorio().getNumero() : "N/A";
+                String consultorioDesc = cita.getConsultorio() != null ? cita.getConsultorio().getDescripcion() : "N/A";
+
+                return new CitaParaFacturacionDto(
+                                cita.getIdCita(),
+                                cita.getPaciente().getIdPaciente(),
+                                cita.getPaciente().getNombres(),
+                                cita.getPaciente().getApellidos(),
+                                cita.getPaciente().getDni(),
+                                especialidad,
+                                "Dr. " + cita.getMedico().getNombres() + " " + cita.getMedico().getApellidos(),
+                                consultorioNum, 
+                                consultorioDesc, 
+                                cita.getFecha(),
+                                cita.getHora(),
+                                cita.getTieneSeguro(),
+                                precio,
+                                cita.getEstadoPago());
+        }
+
+        @Transactional
+        public Cita registrarPago(Integer idCita) {
+                Cita cita = citaRepository.findById(idCita)
+                                .orElseThrow(() -> new EntityNotFoundException("Cita no encontrada con ID: " + idCita));
+                cita.setEstadoPago(Cita.EstadoPago.PAGADO);
+                cita.setEstado(Cita.Estado.Confirmada);
+                return citaRepository.save(cita);
+        }
+
 }

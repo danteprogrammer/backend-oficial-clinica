@@ -17,6 +17,8 @@ public class CitaParaFacturacionDto {
     private String dniPaciente;
     private String especialidad;
     private String medico;
+    private String consultorioNumero; 
+    private String consultorioDescripcion; 
     private LocalDate fecha;
     private LocalTime hora;
     private Boolean tieneSeguro;
