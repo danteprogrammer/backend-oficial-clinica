@@ -2,7 +2,8 @@ INSERT IGNORE INTO `roles` (`id_rol`, `nombre`, `descripcion`) VALUES
 (1, 'ADMIN', 'Administrador del sistema con todos los permisos'),
 (2, 'RECEPCIONISTA', 'Usuario de recepción para gestionar pacientes y citas'),
 (3, 'MEDICO', 'Usuario médico para registrar consultas y diagnósticos'),
-(4, 'CAJA', 'Usuario para gestionar facturación y pagos');
+(4, 'CAJA', 'Usuario para gestionar facturación y pagos'),
+(5, 'TRIAJE', 'Usuario para gestionar triajes y signos vitales');
 
 INSERT IGNORE INTO `usuarios` (`id_usuario`, `nombre_usuario`, `clave`, `estado`, `id_rol`) VALUES
 (1, 'admin', '$2b$12$tVebN1WpmhtD48TQDi7W1ea1dNYOF2iig/OAa4sClnHvu4w.Ygqo6', 'ACTIVO', 1);
@@ -12,6 +13,8 @@ INSERT IGNORE INTO `usuarios` (`id_usuario`, `nombre_usuario`, `clave`, `estado`
 (3, 'medico', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 3);
 INSERT IGNORE INTO `usuarios` (`id_usuario`, `nombre_usuario`, `clave`, `estado`, `id_rol`) VALUES
 (4, 'caja', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 4);
+INSERT IGNORE INTO `usuarios` (`id_usuario`, `nombre_usuario`, `clave`, `estado`, `id_rol`) VALUES
+(5, 'triaje', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 5);
 
 INSERT IGNORE INTO `consultorios` (`id_consultorio`, `numero`, `piso`, `descripcion`, `especialidad`, `estado`) VALUES
 (1, '101', 1, 'Consultorio de Cardiología', 'Cardiología', 'Disponible'),

@@ -22,8 +22,8 @@ public class TriajeService {
     @Autowired
     private HistoriaClinicaRepository historiaClinicaRepository;
 
-    public Triaje registrarTriaje(Long idHistoriaClinica, TriajeDto triajeDto, Usuario usuario) {
-        HistoriaClinica historia = historiaClinicaRepository.findById(idHistoriaClinica)
+    public Triaje registrarTriaje(Integer idHistoriaClinica, TriajeDto triajeDto, Usuario usuario) {
+        HistoriaClinica historia = historiaClinicaRepository.findById(idHistoriaClinica) // <-- Esto ya no dará error
                 .orElseThrow(
                         () -> new RuntimeException("No se encontró la historia clínica con ID: " + idHistoriaClinica));
 
@@ -49,7 +49,7 @@ public class TriajeService {
         return triajeRepository.save(nuevoTriaje);
     }
 
-    public List<Triaje> getTriajesPorHistoria(Long idHistoriaClinica) {
+    public List<Triaje> getTriajesPorHistoria(Integer idHistoriaClinica) {
         return triajeRepository.findByHistoriaClinica_IdHistoriaClinicaOrderByFechaRegistroDesc(idHistoriaClinica);
     }
 }

@@ -32,9 +32,41 @@ public class SecurityConfig {
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(authRequest -> authRequest
 
+                                                // Rutas públicas (Login)
                                                 .requestMatchers("/api/auth/**").permitAll()
                                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                                                // Rutas de RECEPCIONISTA
+                                                .requestMatchers("/api/pacientes/**").hasAuthority("RECEPCIONISTA")
+                                                .requestMatchers("/api/citas/**").hasAuthority("RECEPCIONISTA")
+                                                .requestMatchers("/api/turnos/**").hasAuthority("RECEPCIONISTA")
+                                                .requestMatchers("/api/medicos/especialidades",
+                                                                "/api/medicos/especialidad/**",
+                                                                "/api/medicos/**/horario")
+                                                .hasAuthority("RECEPCIONISTA")
+                                                .requestMatchers("/api/historias/paciente/**")
+                                                .hasAnyAuthority("RECEPCIONISTA", "MEDICO", "TRIAJE") // Permitir a
+                                                                                                      // Recepcionista
+                                                                                                      // buscar
+                                                                                                      // historias
+
+                                                // Rutas de CAJA
+                                                .requestMatchers("/api/facturacion/**").hasAuthority("CAJA")
+                                                .requestMatchers("/api/seguros/**").hasAuthority("CAJA")
+
+                                                // Rutas de TRIAJE (¡NUEVO!)
+                                                .requestMatchers("/api/triajes/**").hasAuthority("TRIAJE")
+
+                                                // Rutas de MEDICO
+                                                .requestMatchers("/api/consultas/**").hasAuthority("MEDICO")
+
+                                                // Rutas de ADMIN (Gestión futura)
+                                                .requestMatchers("/api/consultorios/**").hasAuthority("ADMIN")
+                                                .requestMatchers("/api/medicos/**").hasAuthority("ADMIN")
+
+                                                // Cualquier otra ruta requiere autenticación
                                                 .anyRequest().authenticated())
+
                                 .sessionManagement(sessionManager -> sessionManager
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authenticationProvider(authProvider)

@@ -20,7 +20,7 @@ public class TriajeController {
 
     @PostMapping("/historia/{idHistoriaClinica}")
     public ResponseEntity<Triaje> registrarTriaje(
-            @PathVariable Long idHistoriaClinica,
+            @PathVariable Integer idHistoriaClinica, 
             @RequestBody TriajeDto triajeDto,
             @AuthenticationPrincipal Usuario usuario) {
 
@@ -29,7 +29,8 @@ public class TriajeController {
     }
 
     @GetMapping("/historia/{idHistoriaClinica}")
-    public ResponseEntity<List<Triaje>> getTriajesPorHistoria(@PathVariable Long idHistoriaClinica) {
+    public ResponseEntity<List<Triaje>> getTriajesPorHistoria(@PathVariable Integer idHistoriaClinica) { 
+                                                                                                         
         List<Triaje> triajes = triajeService.getTriajesPorHistoria(idHistoriaClinica);
         return ResponseEntity.ok(triajes);
     }

@@ -11,5 +11,6 @@ public interface TriajeRepository extends JpaRepository<Triaje, Long> {
 
     // Método para buscar todos los registros de triaje de una historia, ordenados
     // por fecha
-    List<Triaje> findByHistoriaClinica_IdHistoriaClinicaOrderByFechaRegistroDesc(Long idHistoriaClinica);
+    // CAMBIA "Long" A "Integer" AQUÍ
+    List<Triaje> findByHistoriaClinica_IdHistoriaClinicaOrderByFechaRegistroDesc(Integer idHistoriaClinica);
 }
