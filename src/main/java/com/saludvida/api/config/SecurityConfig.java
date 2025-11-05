@@ -50,17 +50,23 @@ public class SecurityConfig {
                                                                                                                          // SINTAXIS
                                                                                                                          // CORREGIDA
 
-                                                // --- REGLAS DE OTROS ROLES ---
+                                                // --- REGLAS DE CAJA ---
                                                 .requestMatchers("/api/facturacion/**").hasAuthority("CAJA")
                                                 .requestMatchers("/api/seguros/**").hasAuthority("CAJA")
-                                                .requestMatchers("/api/consultas/**").hasAuthority("MEDICO")
-                                                .requestMatchers("/api/triajes/**").hasAuthority("TRIAJE") // <-- USAMOS
-                                                                                                           // EL ROL
-                                                                                                           // TRIAJE
 
-                                                // (Debe ir DESPUÉS de las reglas de recepcionista)
+                                                // --- REGLAS DE TRIAJE ---
+                                                .requestMatchers("/api/triajes/**").hasAuthority("TRIAJE")
+                                                .requestMatchers("/api/pacientes/activos").hasAuthority("TRIAJE") // <--
+                                                                                                                  // PERMISO
+                                                                                                                  // AÑADIDO
+                                                                                                                  // (¡Muy
+                                                                                                                  // importante!)
                                                 .requestMatchers("/api/historias/paciente/**")
-                                                .hasAnyAuthority("RECEPCIONISTA", "MEDICO", "TRIAJE")
+                                                .hasAnyAuthority("RECEPCIONISTA", "MEDICO", "TRIAJE") // <-- PERMISO
+                                                                                                      // AÑADIDO
+
+                                                // --- REGLAS DE MEDICO ---
+                                                .requestMatchers("/api/consultas/**").hasAuthority("MEDICO")
 
                                                 // --- REGLAS DE ADMIN (al final) ---
                                                 .requestMatchers("/api/consultorios/**").hasAuthority("ADMIN")
