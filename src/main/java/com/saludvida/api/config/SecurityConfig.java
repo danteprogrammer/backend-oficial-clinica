@@ -81,6 +81,8 @@ public class SecurityConfig {
                                                 .hasAuthority("LABORATORIO")
                                                 // --- FIN NUEVAS REGLAS ---
 
+                                                .requestMatchers("/api/dashboard/**").hasAuthority("ADMIN")
+
                                                 // --- REGLAS DE ADMIN (al final) ---
                                                 .requestMatchers("/api/consultorios/**").hasAuthority("ADMIN")
                                                 // Regla general de /api/medicos/ para ADMIN
