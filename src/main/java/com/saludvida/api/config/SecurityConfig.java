@@ -38,9 +38,9 @@ public class SecurityConfig {
 
                                                 // --- REGLAS MÁS ESPECÍFICAS (DEBEN IR PRIMERO) ---
 
-                                                // /api/pacientes/activos (Usado por RECEPCIONISTA y TRIAJE)
+                                                // /api/pacientes/activos (Usado por RECEPCIONISTA, TRIAJE y MEDICO)
                                                 .requestMatchers("/api/pacientes/activos")
-                                                .hasAnyAuthority("RECEPCIONISTA", "TRIAJE")
+                                                .hasAnyAuthority("RECEPCIONISTA", "TRIAJE", "MEDICO") // <-- MODIFICADO
 
                                                 // /api/medicos/ (Reglas específicas de RECEPCIONISTA)
                                                 .requestMatchers("/api/medicos/especialidades")
@@ -64,7 +64,9 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/facturacion/**").hasAuthority("CAJA")
                                                 .requestMatchers("/api/seguros/**").hasAuthority("CAJA")
 
-                                                .requestMatchers("/api/triajes/**").hasAuthority("TRIAJE")
+                                                // /api/triajes/ (Usado por TRIAJE y MEDICO)
+                                                .requestMatchers("/api/triajes/**").hasAnyAuthority("TRIAJE", "MEDICO") // <--
+                                                                                                                        // MODIFICADO
 
                                                 .requestMatchers("/api/consultas/**").hasAuthority("MEDICO")
 
