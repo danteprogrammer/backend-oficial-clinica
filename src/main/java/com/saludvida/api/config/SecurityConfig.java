@@ -36,31 +36,33 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/auth/**").permitAll()
                                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                                                // Rutas de RECEPCIONISTA
+                                                // --- REGLAS DE RECEPCIONISTA ---
                                                 .requestMatchers("/api/pacientes/**").hasAuthority("RECEPCIONISTA")
                                                 .requestMatchers("/api/citas/**").hasAuthority("RECEPCIONISTA")
                                                 .requestMatchers("/api/turnos/**").hasAuthority("RECEPCIONISTA")
-                                                .requestMatchers("/api/medicos/especialidades",
-                                                                "/api/medicos/especialidad/**",
-                                                                "/api/medicos/**/horario")
+                                                // (Reglas específicas de Medico DEBEN ir ANTES de la regla general de
+                                                // ADMIN)
+                                                .requestMatchers("/api/medicos/especialidades")
                                                 .hasAuthority("RECEPCIONISTA")
-                                                .requestMatchers("/api/historias/paciente/**")
-                                                .hasAnyAuthority("RECEPCIONISTA", "MEDICO", "TRIAJE") // Permitir a
-                                                                                                      // Recepcionista
-                                                                                                      // buscar
-                                                                                                      // historias
+                                                .requestMatchers("/api/medicos/especialidad/**")
+                                                .hasAuthority("RECEPCIONISTA")
+                                                .requestMatchers("/api/medicos/*/horario").hasAuthority("RECEPCIONISTA") // <--
+                                                                                                                         // SINTAXIS
+                                                                                                                         // CORREGIDA
 
-                                                // Rutas de CAJA
+                                                // --- REGLAS DE OTROS ROLES ---
                                                 .requestMatchers("/api/facturacion/**").hasAuthority("CAJA")
                                                 .requestMatchers("/api/seguros/**").hasAuthority("CAJA")
-
-                                                // Rutas de TRIAJE (¡NUEVO!)
-                                                .requestMatchers("/api/triajes/**").hasAuthority("TRIAJE")
-
-                                                // Rutas de MEDICO
                                                 .requestMatchers("/api/consultas/**").hasAuthority("MEDICO")
+                                                .requestMatchers("/api/triajes/**").hasAuthority("TRIAJE") // <-- USAMOS
+                                                                                                           // EL ROL
+                                                                                                           // TRIAJE
 
-                                                // Rutas de ADMIN (Gestión futura)
+                                                // (Debe ir DESPUÉS de las reglas de recepcionista)
+                                                .requestMatchers("/api/historias/paciente/**")
+                                                .hasAnyAuthority("RECEPCIONISTA", "MEDICO", "TRIAJE")
+
+                                                // --- REGLAS DE ADMIN (al final) ---
                                                 .requestMatchers("/api/consultorios/**").hasAuthority("ADMIN")
                                                 .requestMatchers("/api/medicos/**").hasAuthority("ADMIN")
 
