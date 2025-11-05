@@ -12,7 +12,13 @@ public interface OrdenLaboratorioRepository extends JpaRepository<OrdenLaborator
     List<OrdenLaboratorio> findByHistoriaClinica_IdHistoriaClinicaOrderByFechaOrdenDesc(Integer idHistoriaClinica);
 
     // Para el laboratorista: ver órdenes que no están completadas
-    @Query("SELECT o FROM OrdenLaboratorio o WHERE o.estado IN (com.saludvida.api.model.OrdenLaboratorio.EstadoOrden.PENDIENTE, com.saludvida.api.model.OrdenLaboratorio.EstadoOrden.EN_PROCESO) ORDER BY o.fechaOrden ASC")
-    List<OrdenLaboratorio> findOrdenesPendientesYEnProceso();
+    @Query("SELECT o FROM OrdenLaboratorio o " +
+            "JOIN FETCH o.historiaClinica hc " +
+            "JOIN FETCH hc.paciente p " +
+            "JOIN FETCH o.medico m " +
+            "WHERE o.estado IN (com.saludvida.api.model.OrdenLaboratorio.EstadoOrden.PENDIENTE, com.saludvida.api.model.OrdenLaboratorio.EstadoOrden.EN_PROCESO) "
+            +
+            "ORDER BY o.fechaOrden ASC")
+    List<OrdenLaboratorio> findOrdenesPendientesYEnProcesoConInfo();
 
 }

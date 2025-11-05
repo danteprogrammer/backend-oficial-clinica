@@ -1,6 +1,7 @@
 package com.saludvida.api.service;
 
 import com.saludvida.api.dto.OrdenLabRequestDto;
+import com.saludvida.api.dto.OrdenLaboratorioResponseDto;
 import com.saludvida.api.dto.ResultadosLabRequestDto;
 import com.saludvida.api.model.HistoriaClinica;
 import com.saludvida.api.model.Medico;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,9 +50,14 @@ public class LaboratorioService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrdenLaboratorio> obtenerOrdenesPendientes() {
-        // En el futuro, podríamos enriquecer esto con DTOs si es necesario
-        return ordenLaboratorioRepository.findOrdenesPendientesYEnProceso();
+    public List<OrdenLaboratorioResponseDto> obtenerOrdenesPendientes() {
+        // Usamos la nueva query del repositorio
+        List<OrdenLaboratorio> ordenes = ordenLaboratorioRepository.findOrdenesPendientesYEnProcesoConInfo();
+
+        // Convertimos la lista de Entidades a una lista de DTOs
+        return ordenes.stream()
+                .map(OrdenLaboratorioResponseDto::new) // Llama al constructor que creamos
+                .collect(Collectors.toList());
     }
 
     @Transactional

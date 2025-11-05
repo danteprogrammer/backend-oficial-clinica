@@ -1,6 +1,7 @@
 package com.saludvida.api.controller;
 
 import com.saludvida.api.dto.OrdenLabRequestDto;
+import com.saludvida.api.dto.OrdenLaboratorioResponseDto;
 import com.saludvida.api.dto.ResultadosLabRequestDto;
 import com.saludvida.api.model.OrdenLaboratorio;
 import com.saludvida.api.service.LaboratorioService;
@@ -35,9 +36,10 @@ public class LaboratorioController {
 
     // --- Endpoints para LABORATORIO ---
 
+    // --- MÉTODO MODIFICADO ---
     @GetMapping("/pendientes")
     @PreAuthorize("hasAuthority('LABORATORIO')")
-    public ResponseEntity<List<OrdenLaboratorio>> getOrdenesPendientes() {
+    public ResponseEntity<List<OrdenLaboratorioResponseDto>> getOrdenesPendientes() {
         return ResponseEntity.ok(laboratorioService.obtenerOrdenesPendientes());
     }
 
