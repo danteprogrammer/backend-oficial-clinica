@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface HorarioRepository extends JpaRepository<Horario, Integer> {
-
+    
     // Este método ya existía
     List<Horario> findByMedico(Medico medico);
 
