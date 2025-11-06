@@ -1,8 +1,6 @@
 package com.saludvida.api.controller;
 
 import com.saludvida.api.dto.CitaParaFacturacionDto;
-import com.saludvida.api.dto.DatosSeguroDto;
-import com.saludvida.api.dto.ValidacionSeguroResponse;
 import com.saludvida.api.model.Cita;
 import com.saludvida.api.service.FacturacionService;
 
@@ -44,19 +42,11 @@ public class FacturacionController {
     @PreAuthorize("hasAuthority('CAJA')")
     public ResponseEntity<Cita> registrarPago(
             @PathVariable Integer idCita,
-            @RequestBody Map<String, String> payload) { 
+            @RequestBody Map<String, String> payload) {
 
         String metodoPago = payload.get("metodoPago");
         String tipoComprobante = payload.get("tipoComprobante");
 
         return ResponseEntity.ok(facturacionService.registrarPago(idCita, metodoPago, tipoComprobante));
-    }
-
-    @PostMapping("/validar-seguro/{idPaciente}")
-    @PreAuthorize("hasAuthority('CAJA')")
-    public ResponseEntity<ValidacionSeguroResponse> validarSeguro(
-            @PathVariable Integer idPaciente,
-            @RequestBody DatosSeguroDto datosSeguro) {
-        return ResponseEntity.ok(facturacionService.validarSeguro(idPaciente, datosSeguro));
     }
 }

@@ -50,8 +50,6 @@ public class SecurityConfig {
                                                 .hasAuthority("CAJA")
                                                 .requestMatchers(HttpMethod.PUT, "/api/facturacion/registrar-pago/**")
                                                 .hasAuthority("CAJA")
-                                                .requestMatchers(HttpMethod.POST, "/api/facturacion/validar-seguro/**")
-                                                .hasAuthority("CAJA")
                                                 .requestMatchers(HttpMethod.GET, "/api/facturacion/citas-pagadas")
                                                 .hasAuthority("CAJA")
                                                 .requestMatchers("/api/seguros/**").hasAuthority("CAJA")
