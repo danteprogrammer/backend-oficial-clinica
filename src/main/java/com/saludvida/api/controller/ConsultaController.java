@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/consultas")
 @RequiredArgsConstructor
@@ -16,7 +18,14 @@ public class ConsultaController {
 
     @PostMapping("/historia/{idHistoriaClinica}")
     @PreAuthorize("hasAuthority('MEDICO') or hasAuthority('ADMIN')")
-    public ResponseEntity<Consulta> registrarConsulta(@PathVariable Integer idHistoriaClinica, @RequestBody Consulta consulta) {
+    public ResponseEntity<Consulta> registrarConsulta(@PathVariable Integer idHistoriaClinica,
+            @RequestBody Consulta consulta) {
         return ResponseEntity.ok(consultaService.registrarConsulta(consulta, idHistoriaClinica));
+    }
+
+    @GetMapping("/historial/{idHistoriaClinica}")
+    @PreAuthorize("hasAuthority('MEDICO')")
+    public ResponseEntity<List<Consulta>> getHistorialConsultas(@PathVariable Integer idHistoriaClinica) {
+        return ResponseEntity.ok(consultaService.getConsultasPorHistoria(idHistoriaClinica));
     }
 }

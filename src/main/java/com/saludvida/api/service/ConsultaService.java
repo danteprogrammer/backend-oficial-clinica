@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +30,14 @@ public class ConsultaService {
         if (consulta.getPeso() != null && consulta.getAltura() != null && consulta.getAltura() > 0) {
             double alturaEnMetros = consulta.getAltura() / 100.0;
             double imc = consulta.getPeso() / (alturaEnMetros * alturaEnMetros);
-            consulta.setImc(Math.round(imc * 100.0) / 100.0); 
+            consulta.setImc(Math.round(imc * 100.0) / 100.0);
         }
 
         return consultaRepository.save(consulta);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Consulta> getConsultasPorHistoria(Integer idHistoriaClinica) {
+        return consultaRepository.findAllByHistoriaClinica_IdHistoriaClinicaOrderByFechaConsultaDesc(idHistoriaClinica);
     }
 }
