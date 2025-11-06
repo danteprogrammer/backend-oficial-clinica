@@ -15,10 +15,8 @@ import com.saludvida.api.model.Medico.Estado;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-// --- AÑADIR ESTAS IMPORTACIONES ---
 import java.time.format.TextStyle;
 import java.util.Locale;
-// --- FIN IMPORTACIONES AÑADIDAS ---
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,43 +50,30 @@ public class MedicoService {
         return medicoRepository.findByEspecialidad(especialidad);
     }
 
-    // --- MÉTODO OBTENERHORARIOMEDICO (CORREGIDO) ---
     @Transactional(readOnly = true)
     public Map<String, List<String>> obtenerHorarioMedico(Integer id) {
-        // Usamos el método que creamos en HorarioRepository
         List<Horario> horarios = horarioRepository.findByMedico_IdMedico(id);
         Map<String, List<String>> calendario = new LinkedHashMap<>();
         LocalDate hoy = LocalDate.now();
-        int duracionCita = 30; // Duración de cada cita en minutos
+        int duracionCita = 30; 
 
-        // Generar disponibilidad para los próximos 15 días
         for (int i = 0; i < 15; i++) {
             LocalDate fecha = hoy.plusDays(i);
 
-            // --- CORRECCIÓN DE DÍA DE SEMANA ---
-            // 1. Obtener el nombre del día en español (ej: "Lunes")
             String diaDeLaSemana = fecha.getDayOfWeek()
                     .getDisplayName(
                             TextStyle.FULL,
                             new Locale("es", "ES"));
-            // --- FIN CORRECCIÓN ---
 
             for (Horario horario : horarios) {
 
-                // --- CORRECCIÓN DE COMPARACIÓN ---
-                // 2. Comparar el nombre del día (String) ignorando mayúsculas/minúsculas
                 if (horario.getDiaSemana().equalsIgnoreCase(diaDeLaSemana)) {
-                    // --- FIN CORRECCIÓN ---
 
                     List<String> horasDisponibles = new ArrayList<>();
 
-                    // --- CORRECCIÓN DE HORAS ---
-                    // 3. Convertir los String "HH:mm" de nuevo a LocalTime para poder comparar
                     LocalTime horaActual = LocalTime.parse(horario.getHoraInicio());
                     LocalTime horaFin = LocalTime.parse(horario.getHoraFin());
-                    // --- FIN CORRECCIÓN ---
 
-                    // 4. Esta lógica ahora funciona porque 'horaActual' y 'horaFin' son LocalTime
                     while (horaActual.isBefore(horaFin)) {
                         horasDisponibles.add(horaActual.toString());
                         horaActual = horaActual.plusMinutes(duracionCita);
@@ -101,7 +86,6 @@ public class MedicoService {
         }
         return calendario;
     }
-    // --- FIN MÉTODO CORREGIDO ---
 
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosPorEstado(Medico.Estado estado) {
@@ -110,7 +94,6 @@ public class MedicoService {
 
     @Transactional
     public Medico crearMedico(Medico medico) {
-        // ... (este método se mantiene igual)
         Optional<Medico> medicoExistente = medicoRepository.findByDni(medico.getDni());
         if (medicoExistente.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -138,7 +121,6 @@ public class MedicoService {
 
     @Transactional
     public Medico actualizarMedico(Integer id, Medico medicoActualizado) {
-        // ... (este método se mantiene igual)
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Médico no encontrado con ID: " + id));
@@ -181,7 +163,6 @@ public class MedicoService {
 
     @Transactional
     public void eliminarMedico(Integer id) {
-        // ... (este método se mantiene igual)
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Médico no encontrado con ID: " + id));
@@ -190,7 +171,6 @@ public class MedicoService {
 
     @Transactional
     public Medico cambiarEstadoMedico(Integer id, Medico.Estado nuevoEstado) {
-        // ... (este método se mantiene igual)
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Médico no encontrado con ID: " + id));
@@ -200,10 +180,9 @@ public class MedicoService {
 
     @Transactional
     public Medico inactivarMedico(Integer id) {
-        // ... (este método se mantiene igual)
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado con ID: " + id));
-        medico.setEstado(Estado.Inactivo); // Usa el enum
+        medico.setEstado(Estado.Inactivo); 
         return medicoRepository.save(medico);
     }
 

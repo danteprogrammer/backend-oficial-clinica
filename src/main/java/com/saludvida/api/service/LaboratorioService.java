@@ -57,6 +57,14 @@ public class LaboratorioService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<OrdenLaboratorioResponseDto> obtenerOrdenesCompletadas() {
+        List<OrdenLaboratorio> ordenes = ordenLaboratorioRepository.findOrdenesCompletadasConInfo();
+        return ordenes.stream()
+                .map(OrdenLaboratorioResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public OrdenLaboratorio actualizarEstado(Integer idOrden, String nuevoEstado) {
         OrdenLaboratorio orden = ordenLaboratorioRepository.findById(idOrden)

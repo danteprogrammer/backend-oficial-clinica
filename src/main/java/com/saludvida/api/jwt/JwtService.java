@@ -26,7 +26,7 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
-    @Value("${jwt.expiration:86400000}") // 86400000ms = 24 horas
+    @Value("${jwt.expiration:86400000}") 
     private long jwtExpiration;
 
     public String getToken(UserDetails userDetails) {
@@ -36,9 +36,8 @@ public class JwtService {
 
         if (userDetails instanceof Usuario) {
             Usuario usuario = (Usuario) userDetails;
-            extraClaims.put("rol", usuario.getRol().getNombre()); // Añadimos el rol
+            extraClaims.put("rol", usuario.getRol().getNombre()); 
 
-            // Si el usuario es un médico y está enlazado
             if (usuario.getMedico() != null) {
                 Medico medico = usuario.getMedico();
                 Map<String, Object> medicoClaims = new HashMap<>();
@@ -52,12 +51,9 @@ public class JwtService {
             }
         }
 
-        // Llamamos al nuevo buildToken con la expiración
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
-    // --- MÉTODO MODIFICADO (Reemplaza tu private getToken, ahora es buildToken)
-    // ---
     private String buildToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
@@ -67,18 +63,14 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                // Ahora usa la variable de expiración
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // --- MÉTODO AÑADIDO (Sobrecarga pedida por el profesor) ---
     private String buildToken(UserDetails userDetails, long expiration) {
         return buildToken(new HashMap<>(), userDetails, expiration);
     }
-
-    // --- EL RESTO DE TUS MÉTODOS SE MANTIENEN IGUAL ---
 
     private Key getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);

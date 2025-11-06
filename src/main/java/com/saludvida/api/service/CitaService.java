@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CitaService {
 private final CitaRepository citaRepository;
-    private final MedicoRepository medicoRepository; // Inyectar repositorio de médicos
-    private final ConsultorioRepository consultorioRepository; // Inyectar repositorio de consultorios
+    private final MedicoRepository medicoRepository; 
+    private final ConsultorioRepository consultorioRepository; 
 
     public Page<Cita> listarCitas(Pageable pageable) {
         return citaRepository.findAll(pageable);
@@ -37,18 +37,15 @@ private final CitaRepository citaRepository;
 
     @Transactional
     public Cita registrarCita(Cita cita) {
-        // 1. Obtener la especialidad del médico
         Medico medico = medicoRepository.findById(cita.getMedico().getIdMedico())
                 .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado"));
         String especialidad = medico.getEspecialidad();
 
-        // 2. Encontrar los IDs de consultorios ya ocupados en esa fecha y hora
         List<Cita> citasOcupadas = citaRepository.findByFechaAndHora(cita.getFecha(), cita.getHora());
         List<Integer> idsConsultoriosOcupados = citasOcupadas.stream()
                 .map(c -> c.getConsultorio().getIdConsultorio())
                 .collect(Collectors.toList());
 
-        // 3. Buscar un consultorio disponible para la especialidad que NO esté ocupado
         List<Consultorio> consultoriosDisponibles = consultorioRepository.findByEstado(Consultorio.Estado.Disponible);
 
         Optional<Consultorio> consultorioAsignado = consultoriosDisponibles.stream()
@@ -56,11 +53,9 @@ private final CitaRepository citaRepository;
                 .filter(c -> !idsConsultoriosOcupados.contains(c.getIdConsultorio()))
                 .findFirst();
 
-        // 4. Asignar el consultorio a la cita
         if (consultorioAsignado.isPresent()) {
             cita.setConsultorio(consultorioAsignado.get());
         } else {
-            // Si no hay consultorios, lanzar un error claro
             throw new RuntimeException("No hay consultorios de " + especialidad + " disponibles para la fecha y hora seleccionada.");
         }
 
@@ -80,9 +75,7 @@ private final CitaRepository citaRepository;
         citaExistente.setEstado(citaActualizada.getEstado());
         citaExistente.setTieneSeguro(citaActualizada.getTieneSeguro());
         
-        // Lógica para re-asignar consultorio si la fecha/hora cambia
         if (!citaExistente.getFecha().equals(citaActualizada.getFecha()) || !citaExistente.getHora().equals(citaActualizada.getHora())) {
-             // Volvemos a ejecutar la lógica de asignación
             Medico medico = medicoRepository.findById(citaActualizada.getMedico().getIdMedico())
                 .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado"));
             String especialidad = medico.getEspecialidad();

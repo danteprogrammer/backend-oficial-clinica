@@ -57,30 +57,25 @@ public class TurnoService {
 
     @Transactional
     public TurnoResponseDto asignarTurno(TurnoDto turnoDto) {
-        // Validar que el paciente existe
         Paciente paciente = pacienteRepository.findById(turnoDto.getPacienteId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Paciente no encontrado con ID: " + turnoDto.getPacienteId()));
 
-        // Validar que el consultorio existe
         Consultorio consultorio = consultorioRepository.findById(turnoDto.getConsultorioId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Consultorio no encontrado con ID: " + turnoDto.getConsultorioId()));
 
-        // Validar que el consultorio esté disponible
         if (consultorio.getEstado() != Consultorio.Estado.Disponible) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "El consultorio no está disponible");
         }
 
-        // Validar que no haya conflicto de horario
         turnoRepository.findConflictingTurno(turnoDto.getFecha(), turnoDto.getHora(), turnoDto.getConsultorioId())
                 .ifPresent(conflictingTurno -> {
                     throw new ResponseStatusException(HttpStatus.CONFLICT,
                             "Ya existe un turno en ese horario para el consultorio");
                 });
 
-        // Crear el turno
         Turno turno = Turno.builder()
                 .paciente(paciente)
                 .consultorio(consultorio)
@@ -105,13 +100,11 @@ public class TurnoService {
             Turno.Estado estado = Turno.Estado.valueOf(nuevoEstado);
             turno.setEstado(estado);
 
-            // Si el turno pasa a "EnProceso", marcar consultorio como ocupado
             if (estado == Turno.Estado.EnProceso) {
                 turno.getConsultorio().setEstado(Consultorio.Estado.Ocupado);
                 consultorioRepository.save(turno.getConsultorio());
             }
 
-            // Si el turno se completa o cancela, liberar consultorio
             if (estado == Turno.Estado.Completado || estado == Turno.Estado.Cancelado) {
                 turno.getConsultorio().setEstado(Consultorio.Estado.Disponible);
                 consultorioRepository.save(turno.getConsultorio());
@@ -134,7 +127,6 @@ public class TurnoService {
 
         turno.setEstado(Turno.Estado.Cancelado);
 
-        // Liberar consultorio
         turno.getConsultorio().setEstado(Consultorio.Estado.Disponible);
         consultorioRepository.save(turno.getConsultorio());
 

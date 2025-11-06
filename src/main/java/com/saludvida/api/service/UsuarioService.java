@@ -29,7 +29,7 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public List<UsuarioResponseDto> listarUsuarios() {
         return usuarioRepository.findAll().stream()
-                .map(UsuarioResponseDto::new) // Usa el constructor del DTO
+                .map(UsuarioResponseDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -84,7 +84,6 @@ public class UsuarioService {
         usuario.setRol(rol);
         usuario.setMedico(medicoAsociado);
 
-        // Actualizar clave solo si se proporciona una nueva
         if (dto.getClave() != null && !dto.getClave().isEmpty()) {
             usuario.setClave(passwordEncoder.encode(dto.getClave()));
         }
@@ -93,7 +92,6 @@ public class UsuarioService {
         return new UsuarioResponseDto(actualizado);
     }
 
-    // --- AÑADIR ESTE NUEVO MÉTODO ---
     @Transactional
     public UsuarioResponseDto inactivarUsuario(Integer id) {
         Usuario usuario = usuarioRepository.findById(id)

@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/horarios")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('ADMIN')") // Proteger todo el controlador
+@PreAuthorize("hasAuthority('ADMIN')") 
 public class HorarioController {
 
     private final HorarioService horarioService;

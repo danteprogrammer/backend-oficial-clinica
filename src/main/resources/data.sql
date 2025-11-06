@@ -22,7 +22,6 @@ INSERT IGNORE INTO `consultorios` (`id_consultorio`, `numero`, `piso`, `descripc
 (5, '301', 3, 'Consultorio de Ginecología', 'Ginecología', 'Disponible'),
 (6, '302', 3, 'Consultorio de Oftalmología', 'Oftalmología', 'Disponible');
 
--- TARIFARIO DE CONSULTAS POR ESPECIALIDAD
 INSERT IGNORE INTO `tarifario` (`especialidad`, `precio`) VALUES
 ('Cardiología', 150.00),
 ('Dermatología', 120.00),
@@ -48,7 +47,6 @@ INSERT IGNORE INTO `historiaclinica` (`id_historia_clinica`, `fecha_creacion`, `
 (5, CURDATE(), 5, NULL, NULL, NULL),
 (6, CURDATE(), 6, 'Fractura de brazo', 'Maní', NULL);
 
--- Datos de prueba para médicos
 INSERT IGNORE INTO `medicos` (`id_medico`, `dni`, `nombres`, `apellidos`, `sexo`, `especialidad`, `telefono`, `email`, `licencia_medica`, `estado`) VALUES
 (1, '40321578', 'Roberto', 'Sánchez', 'Masculino', 'Cardiología', '976543210', 'roberto.sanchez@clinica.com', 'LIC001', 'Activo'),
 (2, '72904561', 'Carmen', 'López', 'Femenino', 'Dermatología', '957012468', 'carmen.lopez@clinica.com', 'LIC002', 'Activo'),
@@ -59,14 +57,14 @@ INSERT IGNORE INTO `medicos` (`id_medico`, `dni`, `nombres`, `apellidos`, `sexo`
 
 -- Insertar horarios para los médicos
 INSERT IGNORE INTO `horarios` (`id_medico`, `dia_semana`, `hora_inicio`, `hora_fin`) VALUES
-(1, 'MONDAY', '09:00:00', '13:00:00'), -- Dr. Sanchez (Cardiología) Lunes AM
-(1, 'WEDNESDAY', '09:00:00', '13:00:00'), -- Dr. Sanchez (Cardiología) Miércoles AM
-(2, 'TUESDAY', '14:00:00', '18:00:00'),  -- Dra. López (Dermatología) Martes PM
-(2, 'THURSDAY', '14:00:00', '18:00:00'), -- Dra. López (Dermatología) Jueves PM
-(3, 'FRIDAY', '08:00:00', '12:00:00'),   -- Dr. Torres (Pediatría) Viernes AM
-(4, 'MONDAY', '15:00:00', '19:00:00'),  -- Dra. Ramírez (Traumatología) Lunes PM
-(5, 'TUESDAY', '09:00:00', '13:00:00'),  -- Dr. Morales (Ginecología) Martes AM
-(6, 'WEDNESDAY', '10:00:00', '14:00:00');-- Dra. Fernández (Oftalmología) Miércoles
+(1, 'MONDAY', '09:00:00', '13:00:00'), 
+(1, 'WEDNESDAY', '09:00:00', '13:00:00'),
+(2, 'TUESDAY', '14:00:00', '18:00:00'), 
+(2, 'THURSDAY', '14:00:00', '18:00:00'), 
+(3, 'FRIDAY', '08:00:00', '12:00:00'),  
+(4, 'MONDAY', '15:00:00', '19:00:00'),  
+(5, 'TUESDAY', '09:00:00', '13:00:00'),  
+(6, 'WEDNESDAY', '10:00:00', '14:00:00');
 
 INSERT IGNORE INTO `turnos` (`id_turno`, `id_paciente`, `id_consultorio`, `fecha`, `hora`, `motivo`, `observaciones`, `estado`) VALUES
 (1, 1, 1, '2025-12-25', '10:00:00', 'Control de rutina', 'Paciente con hipertensión controlada', 'Pendiente'),

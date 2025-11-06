@@ -29,7 +29,6 @@ public class TarifarioService {
 
     @Transactional
     public Tarifario crearTarifa(Tarifario tarifario) {
-        // Validar que la especialidad no exista ya
         Optional<Tarifario> existente = tarifarioRepository.findByEspecialidad(tarifario.getEspecialidad());
         if (existente.isPresent()) {
             throw new IllegalStateException(
@@ -41,8 +40,6 @@ public class TarifarioService {
     @Transactional
     public Tarifario actualizarTarifa(Integer id, Tarifario tarifaActualizada) {
         Tarifario tarifaExistente = buscarPorId(id);
-
-        // Validar si la especialidad está siendo cambiada a una que ya existe
         if (!tarifaExistente.getEspecialidad().equalsIgnoreCase(tarifaActualizada.getEspecialidad())) {
             Optional<Tarifario> otraTarifa = tarifarioRepository
                     .findByEspecialidad(tarifaActualizada.getEspecialidad());

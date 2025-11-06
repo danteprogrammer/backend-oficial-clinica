@@ -22,7 +22,7 @@ public class OrdenLaboratorio {
 
     @ManyToOne
     @JoinColumn(name = "idHistoriaClinica")
-    @JsonBackReference // Evita bucles al consultar la historia
+    @JsonBackReference
     private HistoriaClinica historiaClinica;
 
     @ManyToOne
@@ -37,10 +37,10 @@ public class OrdenLaboratorio {
     private EstadoOrden estado;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String examenesSolicitados; // Ej: "Hemograma, Glucosa, Perfil Lipídico"
+    private String examenesSolicitados; 
 
     @Column(columnDefinition = "TEXT")
-    private String resultados; // Aquí el laboratorista escribirá los resultados
+    private String resultados;
 
     private LocalDate fechaResultados;
 

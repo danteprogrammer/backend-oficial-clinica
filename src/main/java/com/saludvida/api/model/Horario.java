@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data // <-- AÑADIDO
-@NoArgsConstructor // <-- AÑADIDO
-@AllArgsConstructor // <-- AÑADIDO
+@Data 
+@NoArgsConstructor 
+@AllArgsConstructor 
 @Entity
 @Table(name = "horarios")
 public class Horario {
@@ -18,11 +18,9 @@ public class Horario {
     @Column(name = "id_horario")
     private Integer idHorario;
 
-    // Lo mantenemos como String para flexibilidad (Lunes, Martes, etc.)
     @Column(name = "dia_semana", nullable = false)
     private String diaSemana;
 
-    // Lo mantenemos como String para formato "HH:mm"
     @Column(name = "hora_inicio", nullable = false)
     private String horaInicio;
 
@@ -31,6 +29,6 @@ public class Horario {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_medico", nullable = false)
-    @JsonBackReference // Evita bucles infinitos al serializar
+    @JsonBackReference 
     private Medico medico;
 }

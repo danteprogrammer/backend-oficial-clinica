@@ -23,7 +23,7 @@ public class TriajeService {
     private HistoriaClinicaRepository historiaClinicaRepository;
 
     public Triaje registrarTriaje(Integer idHistoriaClinica, TriajeDto triajeDto, Usuario usuario) {
-        HistoriaClinica historia = historiaClinicaRepository.findById(idHistoriaClinica) // <-- Esto ya no dará error
+        HistoriaClinica historia = historiaClinicaRepository.findById(idHistoriaClinica) 
                 .orElseThrow(
                         () -> new RuntimeException("No se encontró la historia clínica con ID: " + idHistoriaClinica));
 
@@ -37,11 +37,9 @@ public class TriajeService {
         nuevoTriaje.setTemperatura(triajeDto.getTemperatura());
         nuevoTriaje.setSaturacionOxigeno(triajeDto.getSaturacionOxigeno());
 
-        // Calcular IMC si se proporcionan peso y altura
         if (triajeDto.getPeso() != null && triajeDto.getAltura() != null && triajeDto.getAltura() > 0) {
             double alturaEnMetros = triajeDto.getAltura() / 100.0;
             double imc = triajeDto.getPeso() / (alturaEnMetros * alturaEnMetros);
-            // Redondear a 2 decimales
             BigDecimal imcRedondeado = new BigDecimal(imc).setScale(2, RoundingMode.HALF_UP);
             nuevoTriaje.setImc(imcRedondeado.doubleValue());
         }

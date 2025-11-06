@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor // Constructor para facilitar la creación en la query
+@AllArgsConstructor 
 public class EspecialidadConteoDto {
     private String especialidad;
     private Long cantidad;

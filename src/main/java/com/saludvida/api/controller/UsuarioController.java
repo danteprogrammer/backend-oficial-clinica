@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/usuarios")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('ADMIN')") // Proteger todo el controlador
+@PreAuthorize("hasAuthority('ADMIN')") 
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
@@ -40,7 +40,6 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.actualizarUsuario(id, dto));
     }
 
-    // --- AÑADIR ESTE NUEVO ENDPOINT ---
     @PutMapping("/{id}/inactivar")
     public ResponseEntity<UsuarioResponseDto> inactivarUsuario(@PathVariable Integer id) {
         return ResponseEntity.ok(usuarioService.inactivarUsuario(id));

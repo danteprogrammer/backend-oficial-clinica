@@ -19,14 +19,11 @@ public class TarifarioController {
 
     private final TarifarioService tarifarioService;
 
-    // --- Endpoint para ADMIN y CAJA (Leer) ---
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'CAJA')")
     public ResponseEntity<List<Tarifario>> listarTarifario() {
         return ResponseEntity.ok(tarifarioService.listarTodos());
     }
-
-    // --- Endpoints solo para ADMIN (Crear, Actualizar, Borrar) ---
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")

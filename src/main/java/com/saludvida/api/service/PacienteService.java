@@ -22,7 +22,7 @@ public class PacienteService {
 
     private final PacienteRepository pacienteRepository;
     private final HistoriaClinicaRepository historiaClinicaRepository;
-    private final SeguroMedicoRepository seguroMedicoRepository; // <-- Inyección del nuevo repositorio
+    private final SeguroMedicoRepository seguroMedicoRepository; 
 
     @Transactional
     public Paciente registrarNuevoPaciente(Paciente paciente) {
@@ -62,7 +62,6 @@ public class PacienteService {
         Paciente paciente = pacienteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado con ID: " + id));
 
-        // Actualizar datos personales
         paciente.setNombres(datos.getNombres());
         paciente.setApellidos(datos.getApellidos());
         paciente.setSexo(datos.getSexo());
@@ -72,7 +71,6 @@ public class PacienteService {
         paciente.setEmail(datos.getEmail());
         pacienteRepository.save(paciente);
 
-        // Actualizar historia clínica
         HistoriaClinica historia = historiaClinicaRepository.findByPaciente_IdPaciente(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Historia Clínica no encontrada para el paciente con ID: " + id));
@@ -81,7 +79,6 @@ public class PacienteService {
         historia.setEnfermedadesCronicas(datos.getEnfermedadesCronicas());
         historiaClinicaRepository.save(historia);
 
-        // --- LÓGICA PARA GUARDAR O ACTUALIZAR SEGURO ---
         if (datos.getNombreAseguradora() != null && !datos.getNombreAseguradora().isEmpty()) {
             SeguroMedico seguro = seguroMedicoRepository.findByPaciente_IdPaciente(id).orElse(new SeguroMedico());
             seguro.setPaciente(paciente);
@@ -103,7 +100,6 @@ public class PacienteService {
         SeguroMedico seguro = seguroMedicoRepository.findByPaciente_IdPaciente(id).orElse(new SeguroMedico());
 
         PacienteUpdateDTO dto = new PacienteUpdateDTO();
-        // Datos Personales
         dto.setNombres(paciente.getNombres());
         dto.setApellidos(paciente.getApellidos());
         dto.setSexo(paciente.getSexo());
@@ -111,11 +107,9 @@ public class PacienteService {
         dto.setDireccion(paciente.getDireccion());
         dto.setTelefono(paciente.getTelefono());
         dto.setEmail(paciente.getEmail());
-        // Datos de Historia
         dto.setAlergias(historia.getAlergias());
         dto.setAntecedentes(historia.getAntecedentes());
         dto.setEnfermedadesCronicas(historia.getEnfermedadesCronicas());
-        // Datos de Seguro
         dto.setNombreAseguradora(seguro.getNombreAseguradora());
         dto.setNumeroPoliza(seguro.getNumeroPoliza());
         dto.setCobertura(seguro.getCobertura());

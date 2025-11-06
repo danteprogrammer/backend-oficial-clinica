@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TurnoConNombreDto {
-    private String pacienteNombre; // Nombre completo del paciente (nombres + apellidos)
+    private String pacienteNombre; 
     private Integer consultorioId;
     private LocalDate fecha;
     private LocalTime hora;

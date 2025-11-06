@@ -7,10 +7,7 @@ import java.util.List;
 
 public interface HorarioRepository extends JpaRepository<Horario, Integer> {
     
-    // Este método ya existía
     List<Horario> findByMedico(Medico medico);
 
-    // --- AÑADIR ESTE MÉTODO ---
-    // Es más eficiente para buscar por ID desde el servicio
     List<Horario> findByMedico_IdMedico(Integer idMedico);
 }

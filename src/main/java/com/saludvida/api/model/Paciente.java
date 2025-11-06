@@ -25,7 +25,7 @@ public class Paciente {
 
     @NotBlank(message = "El DNI es obligatorio.")
     @Size(min = 8, max = 8, message = "El DNI debe tener 8 dígitos.")
-    @Column(name = "dni", unique = true) // Asegura que el DNI sea único en la base de datos
+    @Column(name = "dni", unique = true) 
     private String dni;
 
     @NotBlank(message = "Los nombres son obligatorios.")

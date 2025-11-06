@@ -12,8 +12,8 @@ public class UsuarioResponseDto {
     private String estado;
     private String rolNombre;
     private Integer idRol;
-    private String medicoAsociado; // "Dr. Apellido" o "N/A"
-    private Integer idMedicoAsociado; // El ID del médico
+    private String medicoAsociado; 
+    private Integer idMedicoAsociado; 
 
     public UsuarioResponseDto(Usuario usuario) {
         this.idUsuario = usuario.getIdUsuario();

@@ -19,4 +19,12 @@ public interface OrdenLaboratorioRepository extends JpaRepository<OrdenLaborator
             "ORDER BY o.fechaOrden ASC")
     List<OrdenLaboratorio> findOrdenesPendientesYEnProcesoConInfo();
 
+    @Query("SELECT o FROM OrdenLaboratorio o " +
+            "JOIN FETCH o.historiaClinica hc " +
+            "JOIN FETCH hc.paciente p " +
+            "JOIN FETCH o.medico m " +
+            "WHERE o.estado = com.saludvida.api.model.OrdenLaboratorio.EstadoOrden.COMPLETADO " +
+            "ORDER BY o.fechaResultados DESC")
+    List<OrdenLaboratorio> findOrdenesCompletadasConInfo();
+
 }

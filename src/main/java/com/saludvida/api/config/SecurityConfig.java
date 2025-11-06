@@ -62,6 +62,8 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/laboratorio/historia/**").hasAuthority("MEDICO")
                                                 .requestMatchers("/api/laboratorio/pendientes")
                                                 .hasAuthority("LABORATORIO")
+                                                .requestMatchers("/api/laboratorio/completadas")
+                                                .hasAuthority("LABORATORIO")
                                                 .requestMatchers("/api/laboratorio/*/estado")
                                                 .hasAuthority("LABORATORIO")
                                                 .requestMatchers("/api/laboratorio/*/resultados")

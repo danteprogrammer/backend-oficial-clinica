@@ -21,9 +21,6 @@ public class MedicoController {
 
     private final MedicoService medicoService;
 
-    /**
-     * Obtiene todos los médicos
-     */
     @GetMapping
     public ResponseEntity<List<Medico>> getMedicos() {
         try {
@@ -34,9 +31,6 @@ public class MedicoController {
         }
     }
 
-    /**
-     * Obtiene un médico por ID
-     */
     @GetMapping("/{id}")
     public ResponseEntity<Medico> getMedico(@PathVariable Integer id) {
         try {
@@ -48,9 +42,6 @@ public class MedicoController {
         }
     }
 
-    /**
-     * Obtiene médicos disponibles
-     */
     @GetMapping("/disponibles")
     public ResponseEntity<List<Medico>> getMedicosDisponibles() {
         try {
@@ -61,9 +52,6 @@ public class MedicoController {
         }
     }
 
-    /**
-     * Obtiene médicos por especialidad
-     */
     @GetMapping("/especialidad/{especialidad}")
     public ResponseEntity<List<Medico>> getMedicosPorEspecialidad(@PathVariable String especialidad) {
         try {
@@ -74,9 +62,6 @@ public class MedicoController {
         }
     }
 
-    /**
-     * Obtiene médicos por estado
-     */
     @GetMapping("/estado/{estado}")
     public ResponseEntity<List<Medico>> getMedicosPorEstado(@PathVariable String estado) {
         try {
@@ -90,9 +75,6 @@ public class MedicoController {
         }
     }
 
-    /**
-     * Crea un nuevo médico
-     */
     @PostMapping
     public ResponseEntity<?> crearMedico(@RequestBody Medico medico) {
         try {
@@ -112,9 +94,6 @@ public class MedicoController {
         }
     }
 
-    /**
-     * Actualiza un médico existente
-     */
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarMedico(@PathVariable Integer id, @RequestBody Medico medico) {
         try {
@@ -134,9 +113,6 @@ public class MedicoController {
         }
     }
 
-    /**
-     * Elimina un médico
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarMedico(@PathVariable Integer id) {
         try {
@@ -155,9 +131,6 @@ public class MedicoController {
         }
     }
 
-    /**
-     * Cambia el estado de un médico
-     */
     @PutMapping("/{id}/estado")
     public ResponseEntity<?> cambiarEstadoMedico(@PathVariable Integer id, @RequestBody Map<String, String> request) {
         try {
@@ -194,9 +167,6 @@ public class MedicoController {
         }
     }
 
-    /**
-     * Obtiene el horario disponible de un médico por ID
-     */
     @GetMapping("/{id}/horario")
     public ResponseEntity<Map<String, List<String>>> getHorarioMedico(@PathVariable Integer id) {
         try {
@@ -207,7 +177,6 @@ public class MedicoController {
         }
     }
 
-    // --- AÑADIR ESTE NUEVO ENDPOINT ---
     @PutMapping("/{id}/inactivar")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Medico> inactivarMedico(@PathVariable Integer id) {

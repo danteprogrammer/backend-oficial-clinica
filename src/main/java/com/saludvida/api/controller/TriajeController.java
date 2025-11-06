@@ -29,8 +29,7 @@ public class TriajeController {
     }
 
     @GetMapping("/historia/{idHistoriaClinica}")
-    public ResponseEntity<List<Triaje>> getTriajesPorHistoria(@PathVariable Integer idHistoriaClinica) { 
-                                                                                                         
+    public ResponseEntity<List<Triaje>> getTriajesPorHistoria(@PathVariable Integer idHistoriaClinica) {                                                                                                  
         List<Triaje> triajes = triajeService.getTriajesPorHistoria(idHistoriaClinica);
         return ResponseEntity.ok(triajes);
     }

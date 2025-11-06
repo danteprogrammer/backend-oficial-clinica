@@ -38,6 +38,12 @@ public class LaboratorioController {
         return ResponseEntity.ok(laboratorioService.obtenerOrdenesPendientes());
     }
 
+    @GetMapping("/completadas")
+    @PreAuthorize("hasAuthority('LABORATORIO')")
+    public ResponseEntity<List<OrdenLaboratorioResponseDto>> getOrdenesCompletadas() {
+        return ResponseEntity.ok(laboratorioService.obtenerOrdenesCompletadas());
+    }
+
     @PutMapping("/{idOrden}/estado")
     @PreAuthorize("hasAuthority('LABORATORIO')")
     public ResponseEntity<OrdenLaboratorio> actualizarEstado(@PathVariable Integer idOrden,

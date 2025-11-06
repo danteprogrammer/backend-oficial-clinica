@@ -5,10 +5,10 @@ import lombok.Data;
 @Data
 public class UsuarioRequestDto {
     private String nombreUsuario;
-    private String clave; // Opcional en actualización
+    private String clave; 
     private String nombres;
     private String apellidos;
-    private String estado; // "ACTIVO" o "INACTIVO"
+    private String estado; 
     private Integer idRol;
-    private Integer idMedico; // Opcional, solo para rol MEDICO
+    private Integer idMedico; 
 }

@@ -21,29 +21,29 @@ public class Triaje {
     private HistoriaClinica historiaClinica;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false) // Para saber qué enfermero/a lo registró
+    @JoinColumn(name = "id_usuario", nullable = false) 
     private Usuario registradoPor;
 
     @Column(nullable = false)
     private LocalDateTime fechaRegistro;
 
-    @Column(nullable = true) // Hacemos los campos 'nullable' para flexibilidad
-    private Double peso; // en kg
+    @Column(nullable = true)
+    private Double peso; 
 
     @Column(nullable = true)
-    private Double altura; // en cm
+    private Double altura; 
 
     @Column(nullable = true)
-    private Double imc; // Índice de Masa Corporal (calculado)
+    private Double imc; 
 
     @Column(length = 10, nullable = true)
-    private String presionArterial; // ej. "120/80"
+    private String presionArterial; 
 
     @Column(nullable = true)
-    private Double temperatura; // en °C
+    private Double temperatura; 
 
     @Column(nullable = true)
-    private Double saturacionOxigeno; // en %
+    private Double saturacionOxigeno; 
 
     @PrePersist
     protected void onCreate() {

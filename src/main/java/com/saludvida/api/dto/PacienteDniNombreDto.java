@@ -9,7 +9,6 @@ public class PacienteDniNombreDto {
     private String apellidos;
     private String dni;
 
-    // Constructor que acepta la entidad Paciente
     public PacienteDniNombreDto(Paciente paciente) {
         this.nombres = paciente.getNombres();
         this.apellidos = paciente.getApellidos();

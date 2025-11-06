@@ -8,7 +8,6 @@ public class MedicoNombreDto {
     private String nombres;
     private String apellidos;
 
-    // Constructor que acepta la entidad Medico
     public MedicoNombreDto(Medico medico) {
         this.nombres = medico.getNombres();
         this.apellidos = medico.getApellidos();

@@ -16,10 +16,10 @@ public class SeguroMedicoController {
     private final SeguroMedicoService seguroMedicoService;
 
     @PostMapping("/validar/paciente/{idPaciente}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'RECEPCIONISTA', 'CAJA')") // Añadir CAJA
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'RECEPCIONISTA', 'CAJA')") 
     public ResponseEntity<ValidacionSeguroResponse> validarSeguro(
             @PathVariable Integer idPaciente,
-            @RequestBody(required = false) DatosSeguroDto datosSeguro // Hacerlo opcional por si no se ingresan datos
+            @RequestBody(required = false) DatosSeguroDto datosSeguro 
     ) {
         ValidacionSeguroResponse response = seguroMedicoService.validarSeguroPorPacienteId(idPaciente, datosSeguro);
         return ResponseEntity.ok(response);
