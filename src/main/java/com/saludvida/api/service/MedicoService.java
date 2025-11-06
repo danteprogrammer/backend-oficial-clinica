@@ -15,6 +15,10 @@ import com.saludvida.api.model.Medico.Estado;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+// --- AÑADIR ESTAS IMPORTACIONES ---
+import java.time.format.TextStyle;
+import java.util.Locale;
+// --- FIN IMPORTACIONES AÑADIDAS ---
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,9 +52,11 @@ public class MedicoService {
         return medicoRepository.findByEspecialidad(especialidad);
     }
 
-@Transactional(readOnly = true)
+    // --- MÉTODO OBTENERHORARIOMEDICO (CORREGIDO) ---
+    @Transactional(readOnly = true)
     public Map<String, List<String>> obtenerHorarioMedico(Integer id) {
-        List<Horario> horarios = horarioRepository.findByMedicoIdMedico(id);
+        // Usamos el método que creamos en HorarioRepository
+        List<Horario> horarios = horarioRepository.findByMedico_IdMedico(id);
         Map<String, List<String>> calendario = new LinkedHashMap<>();
         LocalDate hoy = LocalDate.now();
         int duracionCita = 30; // Duración de cada cita en minutos
@@ -58,11 +64,32 @@ public class MedicoService {
         // Generar disponibilidad para los próximos 15 días
         for (int i = 0; i < 15; i++) {
             LocalDate fecha = hoy.plusDays(i);
+
+            // --- CORRECCIÓN DE DÍA DE SEMANA ---
+            // 1. Obtener el nombre del día en español (ej: "Lunes")
+            String diaDeLaSemana = fecha.getDayOfWeek()
+                    .getDisplayName(
+                            TextStyle.FULL,
+                            new Locale("es", "ES"));
+            // --- FIN CORRECCIÓN ---
+
             for (Horario horario : horarios) {
-                if (horario.getDiaSemana() == fecha.getDayOfWeek()) {
+
+                // --- CORRECCIÓN DE COMPARACIÓN ---
+                // 2. Comparar el nombre del día (String) ignorando mayúsculas/minúsculas
+                if (horario.getDiaSemana().equalsIgnoreCase(diaDeLaSemana)) {
+                    // --- FIN CORRECCIÓN ---
+
                     List<String> horasDisponibles = new ArrayList<>();
-                    LocalTime horaActual = horario.getHoraInicio();
-                    while (horaActual.isBefore(horario.getHoraFin())) {
+
+                    // --- CORRECCIÓN DE HORAS ---
+                    // 3. Convertir los String "HH:mm" de nuevo a LocalTime para poder comparar
+                    LocalTime horaActual = LocalTime.parse(horario.getHoraInicio());
+                    LocalTime horaFin = LocalTime.parse(horario.getHoraFin());
+                    // --- FIN CORRECCIÓN ---
+
+                    // 4. Esta lógica ahora funciona porque 'horaActual' y 'horaFin' son LocalTime
+                    while (horaActual.isBefore(horaFin)) {
                         horasDisponibles.add(horaActual.toString());
                         horaActual = horaActual.plusMinutes(duracionCita);
                     }
@@ -74,6 +101,7 @@ public class MedicoService {
         }
         return calendario;
     }
+    // --- FIN MÉTODO CORREGIDO ---
 
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosPorEstado(Medico.Estado estado) {
@@ -82,45 +110,38 @@ public class MedicoService {
 
     @Transactional
     public Medico crearMedico(Medico medico) {
-        // Validar que el DNI no esté duplicado
+        // ... (este método se mantiene igual)
         Optional<Medico> medicoExistente = medicoRepository.findByDni(medico.getDni());
         if (medicoExistente.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Ya existe un médico con el DNI: " + medico.getDni());
         }
-
-        // Validar campos requeridos
         if (medico.getDni() == null || medico.getDni().trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "El DNI es obligatorio");
         }
-
         if (medico.getNombres() == null || medico.getNombres().trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Los nombres son obligatorios");
         }
-
         if (medico.getApellidos() == null || medico.getApellidos().trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Los apellidos son obligatorios");
         }
-
         if (medico.getEspecialidad() == null || medico.getEspecialidad().trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "La especialidad es obligatoria");
         }
-
         medico.setEstado(Medico.Estado.Activo);
         return medicoRepository.save(medico);
     }
 
     @Transactional
     public Medico actualizarMedico(Integer id, Medico medicoActualizado) {
+        // ... (este método se mantiene igual)
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Médico no encontrado con ID: " + id));
-
-        // Validar que el DNI no esté duplicado si se está cambiando
         if (!medico.getDni().equals(medicoActualizado.getDni())) {
             Optional<Medico> medicoConMismoDni = medicoRepository.findByDni(medicoActualizado.getDni());
             if (medicoConMismoDni.isPresent()) {
@@ -128,8 +149,6 @@ public class MedicoService {
                         "Ya existe otro médico con el DNI: " + medicoActualizado.getDni());
             }
         }
-
-        // Actualizar campos
         if (medicoActualizado.getDni() != null) {
             medico.setDni(medicoActualizado.getDni());
         }
@@ -157,38 +176,36 @@ public class MedicoService {
         if (medicoActualizado.getEstado() != null) {
             medico.setEstado(medicoActualizado.getEstado());
         }
-
         return medicoRepository.save(medico);
     }
 
     @Transactional
     public void eliminarMedico(Integer id) {
+        // ... (este método se mantiene igual)
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Médico no encontrado con ID: " + id));
-
         medicoRepository.delete(medico);
     }
 
     @Transactional
     public Medico cambiarEstadoMedico(Integer id, Medico.Estado nuevoEstado) {
+        // ... (este método se mantiene igual)
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Médico no encontrado con ID: " + id));
-
         medico.setEstado(nuevoEstado);
         return medicoRepository.save(medico);
     }
 
-    // --- AÑADIR ESTE NUEVO MÉTODO ---
     @Transactional
     public Medico inactivarMedico(Integer id) {
+        // ... (este método se mantiene igual)
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado con ID: " + id));
         medico.setEstado(Estado.Inactivo); // Usa el enum
         return medicoRepository.save(medico);
     }
-
 
     @Transactional(readOnly = true)
     public List<String> obtenerEspecialidades() {
