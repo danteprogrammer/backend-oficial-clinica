@@ -47,4 +47,6 @@ public interface CitaRepository extends JpaRepository<Cita, Integer> {
             "WHERE c.fecha = :fecha AND c.estadoPago = 'PAGADO' " +
             "GROUP BY m.especialidad")
     List<EspecialidadConteoDto> countConsultasPorEspecialidadHoy(@Param("fecha") LocalDate fecha);
+
+    List<Cita> findAllByEstadoPagoOrderByFechaDesc(Cita.EstadoPago estadoPago);
 }

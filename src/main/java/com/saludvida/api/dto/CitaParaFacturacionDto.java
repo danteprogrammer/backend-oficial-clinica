@@ -24,4 +24,8 @@ public class CitaParaFacturacionDto {
     private Boolean tieneSeguro;
     private BigDecimal precioConsulta;
     private Cita.EstadoPago estadoPago;
+    private String pacienteDireccion;
+    private String pacienteTelefono;
+    private String metodoPago;
+    private String tipoComprobante;
 }

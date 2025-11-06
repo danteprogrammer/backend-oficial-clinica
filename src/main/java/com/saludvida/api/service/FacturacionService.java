@@ -1,6 +1,8 @@
 package com.saludvida.api.service;
 
 import com.saludvida.api.dto.CitaParaFacturacionDto;
+import com.saludvida.api.dto.DatosSeguroDto; 
+import com.saludvida.api.dto.ValidacionSeguroResponse; 
 import com.saludvida.api.model.Cita;
 import com.saludvida.api.model.Paciente;
 import com.saludvida.api.model.Tarifario;
@@ -23,6 +25,7 @@ public class FacturacionService {
         private final PacienteRepository pacienteRepository;
         private final CitaRepository citaRepository;
         private final TarifarioRepository tarifarioRepository;
+        private final SeguroMedicoService seguroMedicoService;
 
         public List<CitaParaFacturacionDto> obtenerCitasPendientesPorDni(String dni) {
                 Paciente paciente = pacienteRepository.findByDni(dni)
@@ -34,6 +37,14 @@ public class FacturacionService {
 
                 return citas.stream()
                                 .map(this::convertirACitaParaFacturacionDto)
+                                .collect(Collectors.toList());
+        }
+
+        @Transactional(readOnly = true)
+        public List<CitaParaFacturacionDto> getHistorialPagos() {
+                List<Cita> citasPagadas = citaRepository.findAllByEstadoPagoOrderByFechaDesc(Cita.EstadoPago.PAGADO);
+                return citasPagadas.stream()
+                                .map(this::convertirACitaParaFacturacionDto) 
                                 .collect(Collectors.toList());
         }
 
@@ -53,23 +64,34 @@ public class FacturacionService {
                                 cita.getPaciente().getApellidos(),
                                 cita.getPaciente().getDni(),
                                 especialidad,
-                                "Dr. " + cita.getMedico().getNombres() + " " + cita.getMedico().getApellidos(),
-                                consultorioNum, 
-                                consultorioDesc, 
+                                (cita.getMedico().getSexo().equalsIgnoreCase("Femenino") ? "Dra. " : "Dr. ")
+                                                + cita.getMedico().getNombres() + " " + cita.getMedico().getApellidos(),
+                                consultorioNum,
+                                consultorioDesc,
                                 cita.getFecha(),
                                 cita.getHora(),
                                 cita.getTieneSeguro(),
                                 precio,
-                                cita.getEstadoPago());
+                                cita.getEstadoPago(),
+                                cita.getPaciente().getDireccion(),
+                                cita.getPaciente().getTelefono(),
+                                cita.getMetodoPago(),
+                                cita.getTipoComprobante());
         }
 
         @Transactional
-        public Cita registrarPago(Integer idCita) {
+        public Cita registrarPago(Integer idCita, String metodoPago, String tipoComprobante) {
                 Cita cita = citaRepository.findById(idCita)
                                 .orElseThrow(() -> new EntityNotFoundException("Cita no encontrada con ID: " + idCita));
                 cita.setEstadoPago(Cita.EstadoPago.PAGADO);
                 cita.setEstado(Cita.Estado.Confirmada);
+                cita.setMetodoPago(metodoPago);
+                cita.setTipoComprobante(tipoComprobante);
+
                 return citaRepository.save(cita);
         }
 
+        public ValidacionSeguroResponse validarSeguro(Integer idPaciente, DatosSeguroDto datosSeguro) {
+                return seguroMedicoService.validarSeguro(idPaciente, datosSeguro);
+        }
 }
