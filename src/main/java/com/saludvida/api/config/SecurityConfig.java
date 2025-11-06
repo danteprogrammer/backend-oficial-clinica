@@ -88,6 +88,12 @@ public class SecurityConfig {
 
                                                 .requestMatchers("/api/dashboard/**").hasAuthority("ADMIN")
 
+                                                // --- NUEVAS REGLAS DE TARIFARIO ---
+                                                .requestMatchers(HttpMethod.GET, "/api/tarifario")
+                                                .hasAnyAuthority("ADMIN", "CAJA")
+                                                .requestMatchers("/api/tarifario/**").hasAuthority("ADMIN")
+                                                // --- FIN NUEVAS REGLAS ---
+
                                                 // --- REGLAS DE ADMIN (al final) ---
                                                 .requestMatchers("/api/consultorios/**").hasAuthority("ADMIN")
 
