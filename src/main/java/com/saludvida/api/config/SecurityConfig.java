@@ -94,6 +94,10 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/tarifario/**").hasAuthority("ADMIN")
                                                 // --- FIN NUEVAS REGLAS ---
 
+                                                // --- NUEVAS REGLAS DE GESTIÓN DE USUARIOS ---
+                                                .requestMatchers("/api/admin/usuarios/**").hasAuthority("ADMIN")
+                                                // --- FIN NUEVAS REGLAS ---
+
                                                 // --- REGLAS DE ADMIN (al final) ---
                                                 .requestMatchers("/api/consultorios/**").hasAuthority("ADMIN")
 

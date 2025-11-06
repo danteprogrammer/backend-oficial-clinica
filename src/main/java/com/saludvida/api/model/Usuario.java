@@ -30,12 +30,26 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String clave;
 
+    // --- NUEVOS CAMPOS ---
+    @Column(name = "nombres")
+    private String nombres;
+
+    @Column(name = "apellidos")
+    private String apellidos;
+    // --- FIN NUEVOS CAMPOS ---
+
     @Enumerated(EnumType.STRING)
     private Estado estado;
 
     @ManyToOne
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;
+
+    // --- NUEVO ENLACE A MEDICO (OPCIONAL) ---
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_medico", referencedColumnName = "id_medico", nullable = true)
+    private Medico medico;
+    // --- FIN NUEVO ENLACE ---
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -54,17 +68,17 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; 
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; 
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; 
+        return true;
     }
 
     @Override
