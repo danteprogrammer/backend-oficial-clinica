@@ -4,11 +4,14 @@ import com.saludvida.api.model.Horario;
 import com.saludvida.api.model.Medico;
 import com.saludvida.api.repository.HorarioRepository;
 import com.saludvida.api.repository.MedicoRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import com.saludvida.api.model.Medico.Estado;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -176,6 +179,16 @@ public class MedicoService {
         medico.setEstado(nuevoEstado);
         return medicoRepository.save(medico);
     }
+
+    // --- AÑADIR ESTE NUEVO MÉTODO ---
+    @Transactional
+    public Medico inactivarMedico(Integer id) {
+        Medico medico = medicoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado con ID: " + id));
+        medico.setEstado(Estado.Inactivo); // Usa el enum
+        return medicoRepository.save(medico);
+    }
+
 
     @Transactional(readOnly = true)
     public List<String> obtenerEspecialidades() {

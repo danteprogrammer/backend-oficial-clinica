@@ -94,6 +94,10 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/tarifario/**").hasAuthority("ADMIN")
                                                 // --- FIN NUEVAS REGLAS ---
 
+                                                // --- NUEVA REGLA PARA INACTIVAR MÉDICO ---
+                                                .requestMatchers(HttpMethod.PUT, "/api/medicos/{id}/inactivar")
+                                                .hasAuthority("ADMIN")
+
                                                 // --- NUEVAS REGLAS DE GESTIÓN DE USUARIOS ---
                                                 .requestMatchers("/api/admin/usuarios/**").hasAuthority("ADMIN")
                                                 // --- FIN NUEVAS REGLAS ---

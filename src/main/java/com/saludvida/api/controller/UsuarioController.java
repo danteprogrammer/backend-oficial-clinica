@@ -39,4 +39,11 @@ public class UsuarioController {
             @RequestBody UsuarioRequestDto dto) {
         return ResponseEntity.ok(usuarioService.actualizarUsuario(id, dto));
     }
+
+    // --- AÑADIR ESTE NUEVO ENDPOINT ---
+    @PutMapping("/{id}/inactivar")
+    public ResponseEntity<UsuarioResponseDto> inactivarUsuario(@PathVariable Integer id) {
+        return ResponseEntity.ok(usuarioService.inactivarUsuario(id));
+    }
+
 }

@@ -5,6 +5,7 @@ import com.saludvida.api.service.MedicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -205,4 +206,12 @@ public class MedicoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    // --- AÑADIR ESTE NUEVO ENDPOINT ---
+    @PutMapping("/{id}/inactivar")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Medico> inactivarMedico(@PathVariable Integer id) {
+        return ResponseEntity.ok(medicoService.inactivarMedico(id));
+    }
+
 }

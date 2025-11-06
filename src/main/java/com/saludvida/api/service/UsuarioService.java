@@ -92,4 +92,16 @@ public class UsuarioService {
         Usuario actualizado = usuarioRepository.save(usuario);
         return new UsuarioResponseDto(actualizado);
     }
+
+    // --- AÑADIR ESTE NUEVO MÉTODO ---
+    @Transactional
+    public UsuarioResponseDto inactivarUsuario(Integer id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+
+        usuario.setEstado(Usuario.Estado.INACTIVO);
+        Usuario actualizado = usuarioRepository.save(usuario);
+        return new UsuarioResponseDto(actualizado);
+    }
+
 }
