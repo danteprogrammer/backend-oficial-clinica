@@ -102,6 +102,10 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/admin/usuarios/**").hasAuthority("ADMIN")
                                                 // --- FIN NUEVAS REGLAS ---
 
+                                                // --- AÑADIR ESTA LÍNEA ---
+                                                .requestMatchers("/api/admin/horarios/**").hasAuthority("ADMIN")
+                                                // --- FIN LÍNEA AÑADIDA ---
+
                                                 // --- REGLAS DE ADMIN (al final) ---
                                                 .requestMatchers("/api/consultorios/**").hasAuthority("ADMIN")
 
