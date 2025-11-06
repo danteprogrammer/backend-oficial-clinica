@@ -40,7 +40,6 @@ public class LaboratorioService {
                 .examenesSolicitados(request.getExamenesSolicitados())
                 .build();
 
-        // @PrePersist se encarga de la fecha y estado PENDIENTE
         return ordenLaboratorioRepository.save(orden);
     }
 
@@ -51,12 +50,10 @@ public class LaboratorioService {
 
     @Transactional(readOnly = true)
     public List<OrdenLaboratorioResponseDto> obtenerOrdenesPendientes() {
-        // Usamos la nueva query del repositorio
         List<OrdenLaboratorio> ordenes = ordenLaboratorioRepository.findOrdenesPendientesYEnProcesoConInfo();
 
-        // Convertimos la lista de Entidades a una lista de DTOs
         return ordenes.stream()
-                .map(OrdenLaboratorioResponseDto::new) // Llama al constructor que creamos
+                .map(OrdenLaboratorioResponseDto::new) 
                 .collect(Collectors.toList());
     }
 

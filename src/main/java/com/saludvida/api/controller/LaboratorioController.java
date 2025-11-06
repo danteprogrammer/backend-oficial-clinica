@@ -20,8 +20,6 @@ public class LaboratorioController {
 
     private final LaboratorioService laboratorioService;
 
-    // --- Endpoints para MÉDICO ---
-
     @PostMapping("/ordenar")
     @PreAuthorize("hasAuthority('MEDICO')")
     public ResponseEntity<OrdenLaboratorio> crearOrden(@RequestBody OrdenLabRequestDto request) {
@@ -34,9 +32,6 @@ public class LaboratorioController {
         return ResponseEntity.ok(laboratorioService.obtenerOrdenesPorHistoria(idHistoria));
     }
 
-    // --- Endpoints para LABORATORIO ---
-
-    // --- MÉTODO MODIFICADO ---
     @GetMapping("/pendientes")
     @PreAuthorize("hasAuthority('LABORATORIO')")
     public ResponseEntity<List<OrdenLaboratorioResponseDto>> getOrdenesPendientes() {
