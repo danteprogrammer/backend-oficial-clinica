@@ -31,51 +31,25 @@ public class SecurityConfig {
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(authRequest -> authRequest
-
-                                                // Rutas públicas (Login)
                                                 .requestMatchers("/api/auth/**").permitAll()
                                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                                                // --- REGLAS MÁS ESPECÍFICAS (DEBEN IR PRIMERO) ---
-
-                                                // /api/pacientes/activos (Usado por RECEPCIONISTA, TRIAJE y MEDICO)
                                                 .requestMatchers("/api/pacientes/activos")
                                                 .hasAnyAuthority("RECEPCIONISTA", "TRIAJE", "MEDICO")
-
-                                                // --- INICIO DE CAMBIOS: /api/medicos/ (Reglas específicas de
-                                                // RECEPCIONISTA - SOLO LECTURA) ---
-                                                .requestMatchers(HttpMethod.GET, "/api/medicos/especialidades") // <--
-                                                                                                                // MODIFICADO
+                                                .requestMatchers(HttpMethod.GET, "/api/medicos/especialidades")
                                                 .hasAuthority("RECEPCIONISTA")
-                                                .requestMatchers(HttpMethod.GET, "/api/medicos/especialidad/**") // <--
-                                                                                                                 // MODIFICADO
+                                                .requestMatchers(HttpMethod.GET, "/api/medicos/especialidad/**")
                                                 .hasAuthority("RECEPCIONISTA")
-                                                .requestMatchers(HttpMethod.GET, "/api/medicos/*/horario") // <--
-                                                                                                           // MODIFICADO
+                                                .requestMatchers(HttpMethod.GET, "/api/medicos/*/horario")
                                                 .hasAuthority("RECEPCIONISTA")
-                                                // --- FIN DE CAMBIOS ---
-
-                                                // /api/historias/ (Usado por varios roles)
                                                 .requestMatchers("/api/historias/paciente/**")
                                                 .hasAnyAuthority("RECEPCIONISTA", "MEDICO", "TRIAJE")
-
-                                                // --- REGLAS GENERALES POR ROL (Van después de las específicas) ---
-
-                                                // Regla general de /api/pacientes/ para RECEPCIONISTA
                                                 .requestMatchers("/api/pacientes/**").hasAuthority("RECEPCIONISTA")
-
                                                 .requestMatchers("/api/citas/**").hasAuthority("RECEPCIONISTA")
                                                 .requestMatchers("/api/turnos/**").hasAuthority("RECEPCIONISTA")
-
                                                 .requestMatchers("/api/facturacion/**").hasAuthority("CAJA")
                                                 .requestMatchers("/api/seguros/**").hasAuthority("CAJA")
-
-                                                // /api/triajes/ (Usado por TRIAJE y MEDICO)
                                                 .requestMatchers("/api/triajes/**").hasAnyAuthority("TRIAJE", "MEDICO")
-
                                                 .requestMatchers("/api/consultas/**").hasAuthority("MEDICO")
-
-                                                // --- NUEVAS REGLAS DE LABORATORIO ---
                                                 .requestMatchers("/api/laboratorio/ordenar").hasAuthority("MEDICO")
                                                 .requestMatchers("/api/laboratorio/historia/**").hasAuthority("MEDICO")
                                                 .requestMatchers("/api/laboratorio/pendientes")
@@ -84,38 +58,17 @@ public class SecurityConfig {
                                                 .hasAuthority("LABORATORIO")
                                                 .requestMatchers("/api/laboratorio/*/resultados")
                                                 .hasAuthority("LABORATORIO")
-                                                // --- FIN NUEVAS REGLAS ---
-
                                                 .requestMatchers("/api/dashboard/**").hasAuthority("ADMIN")
-
-                                                // --- NUEVAS REGLAS DE TARIFARIO ---
                                                 .requestMatchers(HttpMethod.GET, "/api/tarifario")
                                                 .hasAnyAuthority("ADMIN", "CAJA")
                                                 .requestMatchers("/api/tarifario/**").hasAuthority("ADMIN")
-                                                // --- FIN NUEVAS REGLAS ---
-
-                                                // --- NUEVA REGLA PARA INACTIVAR MÉDICO ---
                                                 .requestMatchers(HttpMethod.PUT, "/api/medicos/{id}/inactivar")
                                                 .hasAuthority("ADMIN")
-
-                                                // --- NUEVAS REGLAS DE GESTIÓN DE USUARIOS ---
                                                 .requestMatchers("/api/admin/usuarios/**").hasAuthority("ADMIN")
-                                                // --- FIN NUEVAS REGLAS ---
-
-                                                // --- AÑADIR ESTA LÍNEA ---
                                                 .requestMatchers("/api/admin/horarios/**").hasAuthority("ADMIN")
-                                                // --- FIN LÍNEA AÑADIDA ---
-
-                                                // --- REGLAS DE ADMIN (al final) ---
                                                 .requestMatchers("/api/consultorios/**").hasAuthority("ADMIN")
-
-                                                // Regla general de /api/medicos/ para ADMIN (CRUD completo)
-                                                // Esta regla APLICA para POST, PUT, DELETE, etc.
                                                 .requestMatchers("/api/medicos/**").hasAuthority("ADMIN")
-
-                                                // Cualquier otra ruta requiere autenticación
                                                 .anyRequest().authenticated())
-
                                 .sessionManagement(sessionManager -> sessionManager
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authenticationProvider(authProvider)
