@@ -18,15 +18,11 @@ public class SeguroMedicoService {
     private final SeguroMedicoRepository seguroMedicoRepository;
 
     public ValidacionSeguroResponse validarSeguroPorPacienteId(Integer idPaciente, DatosSeguroDto datosSeguroInput) {
-        // 1. Busca al paciente
         Paciente paciente = pacienteRepository.findById(idPaciente)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado con ID: " + idPaciente));
 
-        // 2. Intenta obtener el seguro registrado en la BD (si existe)
         SeguroMedico seguroRegistrado = seguroMedicoRepository.findByPaciente_IdPaciente(idPaciente).orElse(null);
 
-        // Datos a usar para la respuesta (los ingresados o los registrados si no se
-        // ingresó nada)
         String aseguradora = (datosSeguroInput != null && datosSeguroInput.getNombreAseguradora() != null)
                 ? datosSeguroInput.getNombreAseguradora()
                 : (seguroRegistrado != null ? seguroRegistrado.getNombreAseguradora() : null);
@@ -37,17 +33,13 @@ public class SeguroMedicoService {
                 ? datosSeguroInput.getCobertura()
                 : (seguroRegistrado != null ? seguroRegistrado.getCobertura() : null);
 
-        // Creamos un objeto con los datos del seguro para devolverlo
         DatosSeguroDto datosSeguroRespuesta = new DatosSeguroDto(aseguradora, poliza, cobertura);
 
-        // 3. Lógica de simulación: Válido si el último dígito del DNI es par
         try {
             String dni = paciente.getDni();
             int ultimoDigito = Integer.parseInt(dni.substring(dni.length() - 1));
 
             if (ultimoDigito % 2 == 0) {
-                // Si es válido, guardamos/actualizamos los datos del seguro ingresados (si los
-                // hay)
                 if (datosSeguroInput != null && datosSeguroInput.getNombreAseguradora() != null) {
                     SeguroMedico seguroParaGuardar = seguroRegistrado != null ? seguroRegistrado : new SeguroMedico();
                     seguroParaGuardar.setPaciente(paciente);
@@ -62,7 +54,6 @@ public class SeguroMedicoService {
                         "La póliza del seguro ha expirado o no tiene cobertura.", datosSeguroRespuesta);
             }
         } catch (Exception e) {
-            // Loguear el error real e.printStackTrace();
             return new ValidacionSeguroResponse("Error", "No se pudo validar el seguro del paciente.",
                     datosSeguroRespuesta);
         }
