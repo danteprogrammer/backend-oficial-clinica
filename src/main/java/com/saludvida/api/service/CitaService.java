@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.LocalDate; 
 import java.time.LocalTime; 
 import java.time.format.DateTimeFormatter; 
 import java.util.ArrayList; 
@@ -31,7 +31,7 @@ public class CitaService {
     private final CitaRepository citaRepository;
     private final MedicoRepository medicoRepository;
     private final ConsultorioRepository consultorioRepository;
-    private final HorarioRepository horarioRepository; // <-- INYECTAR
+    private final HorarioRepository horarioRepository; 
 
     public Page<Cita> listarCitas(Pageable pageable) {
         return citaRepository.findAll(pageable);
@@ -139,7 +139,6 @@ public class CitaService {
         return citaRepository.findByEstado(estado);
     }
 
-    // --- NUEVO MÉTODO ---
     public List<String> getHorasDisponibles(Integer idMedico, LocalDate fecha) {
         String diaSemana = fecha.getDayOfWeek().toString();
 

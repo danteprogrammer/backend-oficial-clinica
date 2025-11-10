@@ -6,9 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data 
-@NoArgsConstructor 
-@AllArgsConstructor 
+import java.time.LocalTime; 
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "horarios")
 public class Horario {
@@ -22,13 +24,13 @@ public class Horario {
     private String diaSemana;
 
     @Column(name = "hora_inicio", nullable = false)
-    private String horaInicio;
+    private LocalTime horaInicio;
 
     @Column(name = "hora_fin", nullable = false)
-    private String horaFin;
+    private LocalTime horaFin;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_medico", nullable = false)
-    @JsonBackReference 
+    @JsonBackReference
     private Medico medico;
 }

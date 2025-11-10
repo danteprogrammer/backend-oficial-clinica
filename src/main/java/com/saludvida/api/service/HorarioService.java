@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -18,6 +20,7 @@ public class HorarioService {
 
     private final HorarioRepository horarioRepository;
     private final MedicoRepository medicoRepository;
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     @Transactional(readOnly = true)
     public List<Horario> getHorariosPorMedico(Integer idMedico) {
@@ -32,8 +35,8 @@ public class HorarioService {
         Horario horario = new Horario();
         horario.setMedico(medico);
         horario.setDiaSemana(dto.getDiaSemana());
-        horario.setHoraInicio(dto.getHoraInicio());
-        horario.setHoraFin(dto.getHoraFin());
+        horario.setHoraInicio(LocalTime.parse(dto.getHoraInicio(), TIME_FORMATTER));
+        horario.setHoraFin(LocalTime.parse(dto.getHoraFin(), TIME_FORMATTER));
 
         return horarioRepository.save(horario);
     }
