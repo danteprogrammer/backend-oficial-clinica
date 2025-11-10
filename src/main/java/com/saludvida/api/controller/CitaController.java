@@ -6,18 +6,18 @@ import com.saludvida.api.service.CitaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Pageable; 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDate; 
+import java.util.List; 
 
 @RestController
 @RequestMapping("/api/citas")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200") 
 public class CitaController {
 
     private final CitaService citaService;
@@ -26,7 +26,7 @@ public class CitaController {
     public ResponseEntity<Page<Cita>> listarCitas(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size); 
         return ResponseEntity.ok(citaService.listarCitas(pageable));
     }
 
@@ -61,7 +61,7 @@ public class CitaController {
             @PathVariable Integer pacienteId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size); 
         return ResponseEntity.ok(citaService.buscarCitasPorPaciente(pacienteId, pageable));
     }
 
@@ -70,7 +70,7 @@ public class CitaController {
             @PathVariable String fecha,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size); 
         return ResponseEntity.ok(
                 citaService.buscarCitasPorFecha(java.time.LocalDate.parse(fecha), pageable));
     }

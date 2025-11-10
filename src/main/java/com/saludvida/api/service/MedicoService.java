@@ -55,7 +55,7 @@ public class MedicoService {
         List<Horario> horarios = horarioRepository.findByMedico_IdMedico(id);
         Map<String, List<String>> calendario = new LinkedHashMap<>();
         LocalDate hoy = LocalDate.now();
-        int duracionCita = 30; 
+        int duracionCita = 30;
 
         for (int i = 0; i < 15; i++) {
             LocalDate fecha = hoy.plusDays(i);
@@ -71,8 +71,8 @@ public class MedicoService {
 
                     List<String> horasDisponibles = new ArrayList<>();
 
-                    LocalTime horaActual = LocalTime.parse(horario.getHoraInicio());
-                    LocalTime horaFin = LocalTime.parse(horario.getHoraFin());
+                    LocalTime horaActual = horario.getHoraInicio();
+                    LocalTime horaFin = horario.getHoraFin();
 
                     while (horaActual.isBefore(horaFin)) {
                         horasDisponibles.add(horaActual.toString());
@@ -182,7 +182,7 @@ public class MedicoService {
     public Medico inactivarMedico(Integer id) {
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado con ID: " + id));
-        medico.setEstado(Estado.Inactivo); 
+        medico.setEstado(Estado.Inactivo);
         return medicoRepository.save(medico);
     }
 
