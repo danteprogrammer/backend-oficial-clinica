@@ -10,4 +10,6 @@ public interface HorarioRepository extends JpaRepository<Horario, Integer> {
     List<Horario> findByMedico(Medico medico);
 
     List<Horario> findByMedico_IdMedico(Integer idMedico);
+
+    List<Horario> findByMedico_IdMedicoAndDiaSemana(Integer idMedico, String diaSemana);
 }
