@@ -43,7 +43,7 @@ public interface CitaRepository extends JpaRepository<Cita, Integer> {
             "WHERE c.fecha = :fecha AND c.estadoPago = 'PAGADO'")
     Long countCitasPagadasPorFecha(@Param("fecha") LocalDate fecha);
 
-    @Query("SELECT new com.saludvida.api.dto.EspecialidadConteoDto(m.especialidad, COUNT(c)) " +
+@Query("SELECT new com.saludvida.api.dto.EspecialidadConteoDto(m.especialidad.nombre, COUNT(c)) " +
             "FROM Cita c " +
             "JOIN c.medico m " +
             "WHERE c.fecha = :fecha AND c.estadoPago = 'PAGADO' " +
