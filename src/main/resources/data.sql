@@ -23,12 +23,12 @@ INSERT IGNORE INTO `especialidad` (nombre, descripcion) VALUES
 ('Oftalmología', 'Atención de los ojos');
 
 INSERT IGNORE INTO `consultorios` (`id_consultorio`, `numero`, `piso`, `descripcion`, `especialidad_id`, `estado`) VALUES
-(1, '101', 1, 'Consultorio de Cardiología', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Cardiología'), 'Disponible'),
-(2, '102', 1, 'Consultorio de Dermatología', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Dermatología'), 'Disponible'),
-(3, '201', 2, 'Consultorio de Pediatría', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Pediatría'), 'Disponible'),
-(4, '202', 2, 'Consultorio de Traumatología', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Traumatología'), 'Mantenimiento'),
-(5, '301', 3, 'Consultorio de Ginecología', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Ginecología'), 'Disponible'),
-(6, '302', 3, 'Consultorio de Oftalmología', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Oftalmología'), 'Disponible');
+(1, '101', 1, 'Consultorio de Cardiología', (SELECT id_especialidad FROM especialidad WHERE nombre = 'Cardiología'), 'Disponible'),
+(2, '102', 1, 'Consultorio de Dermatología', (SELECT id_especialidad FROM especialidad WHERE nombre = 'Dermatología'), 'Disponible'),
+(3, '201', 2, 'Consultorio de Pediatría', (SELECT id_especialidad FROM especialidad WHERE nombre = 'Pediatría'), 'Disponible'),
+(4, '202', 2, 'Consultorio de Traumatología', (SELECT id_especialidad FROM especialidad WHERE nombre = 'Traumatología'), 'Mantenimiento'),
+(5, '301', 3, 'Consultorio de Ginecología', (SELECT id_especialidad FROM especialidad WHERE nombre = 'Ginecología'), 'Disponible'),
+(6, '302', 3, 'Consultorio de Oftalmología', (SELECT id_especialidad FROM especialidad WHERE nombre = 'Oftalmología'), 'Disponible');
 
 INSERT IGNORE INTO `tarifario` (`especialidad_id`, `precio`) VALUES
 ((SELECT idEspecialidad FROM especialidad WHERE nombre = 'Cardiología'), 150.00),
