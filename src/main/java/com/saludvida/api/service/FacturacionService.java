@@ -4,6 +4,7 @@ import com.saludvida.api.dto.CitaParaFacturacionDto;
 import com.saludvida.api.dto.DatosSeguroDto;
 import com.saludvida.api.dto.ValidacionSeguroResponse;
 import com.saludvida.api.model.Cita;
+import com.saludvida.api.model.Especialidad;
 import com.saludvida.api.model.Medico;
 import com.saludvida.api.model.Paciente;
 import com.saludvida.api.model.Tarifario;
@@ -50,8 +51,8 @@ public class FacturacionService {
         }
 
         private CitaParaFacturacionDto convertirACitaParaFacturacionDto(Cita cita) {
-                String especialidad = cita.getMedico().getEspecialidad();
-                BigDecimal precio = tarifarioRepository.findByEspecialidad(especialidad)
+                Especialidad especialidad = cita.getMedico().getEspecialidad(); 
+                BigDecimal precio = tarifarioRepository.findByEspecialidad(especialidad) 
                                 .map(Tarifario::getPrecio)
                                 .orElse(BigDecimal.ZERO);
 
@@ -66,7 +67,7 @@ public class FacturacionService {
                                 cita.getPaciente().getNombres(),
                                 cita.getPaciente().getApellidos(),
                                 cita.getPaciente().getDni(),
-                                especialidad,
+                                especialidad.getNombre(), 
                                 tituloMedico + cita.getMedico().getNombres() + " " + cita.getMedico().getApellidos(),
                                 consultorioNum,
                                 consultorioDesc,

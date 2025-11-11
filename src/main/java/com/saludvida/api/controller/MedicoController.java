@@ -1,5 +1,6 @@
 package com.saludvida.api.controller;
 
+import com.saludvida.api.model.Especialidad;
 import com.saludvida.api.model.Medico;
 import com.saludvida.api.service.MedicoService;
 import lombok.RequiredArgsConstructor;
@@ -158,9 +159,9 @@ public class MedicoController {
     }
 
     @GetMapping("/especialidades")
-    public ResponseEntity<List<String>> getEspecialidades() {
+    public ResponseEntity<List<Especialidad>> getEspecialidades() { 
         try {
-            List<String> especialidades = medicoService.obtenerEspecialidades();
+            List<Especialidad> especialidades = medicoService.obtenerEspecialidades(); 
             return ResponseEntity.ok(especialidades);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -3,11 +3,12 @@ package com.saludvida.api.service;
 import com.saludvida.api.model.Cita;
 import com.saludvida.api.model.Cita.Estado;
 import com.saludvida.api.model.Consultorio;
+import com.saludvida.api.model.Especialidad;
 import com.saludvida.api.model.Horario;
 import com.saludvida.api.model.Medico;
 import com.saludvida.api.repository.CitaRepository;
 import com.saludvida.api.repository.ConsultorioRepository;
-import com.saludvida.api.repository.HorarioRepository; 
+import com.saludvida.api.repository.HorarioRepository;
 import com.saludvida.api.repository.MedicoRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -17,10 +18,10 @@ import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate; 
-import java.time.LocalTime; 
-import java.time.format.DateTimeFormatter; 
-import java.util.ArrayList; 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class CitaService {
     private final CitaRepository citaRepository;
     private final MedicoRepository medicoRepository;
     private final ConsultorioRepository consultorioRepository;
-    private final HorarioRepository horarioRepository; 
+    private final HorarioRepository horarioRepository;
 
     public Page<Cita> listarCitas(Pageable pageable) {
         return citaRepository.findAll(pageable);
@@ -46,7 +47,8 @@ public class CitaService {
     public Cita registrarCita(Cita cita) {
         Medico medico = medicoRepository.findById(cita.getMedico().getIdMedico())
                 .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado"));
-        String especialidad = medico.getEspecialidad();
+
+        Especialidad especialidad = medico.getEspecialidad();
 
         List<Cita> citasOcupadas = citaRepository.findByFechaAndHora(cita.getFecha(), cita.getHora());
         List<Integer> idsConsultoriosOcupados = citasOcupadas.stream()
@@ -56,7 +58,7 @@ public class CitaService {
         List<Consultorio> consultoriosDisponibles = consultorioRepository.findByEstado(Consultorio.Estado.Disponible);
 
         Optional<Consultorio> consultorioAsignado = consultoriosDisponibles.stream()
-                .filter(c -> c.getEspecialidad().equalsIgnoreCase(especialidad))
+                .filter(c -> c.getEspecialidad().equals(especialidad))
                 .filter(c -> !idsConsultoriosOcupados.contains(c.getIdConsultorio()))
                 .findFirst();
 
@@ -64,7 +66,8 @@ public class CitaService {
             cita.setConsultorio(consultorioAsignado.get());
         } else {
             throw new RuntimeException(
-                    "No hay consultorios de " + especialidad + " disponibles para la fecha y hora seleccionada.");
+                    "No hay consultorios de " + especialidad.getNombre()
+                            + " disponibles para la fecha y hora seleccionada.");
         }
 
         cita.setTieneSeguro(cita.getTieneSeguro());
@@ -87,7 +90,8 @@ public class CitaService {
                 || !citaExistente.getHora().equals(citaActualizada.getHora())) {
             Medico medico = medicoRepository.findById(citaActualizada.getMedico().getIdMedico())
                     .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado"));
-            String especialidad = medico.getEspecialidad();
+
+            Especialidad especialidad = medico.getEspecialidad();
 
             List<Cita> citasOcupadas = citaRepository.findByFechaAndHora(citaActualizada.getFecha(),
                     citaActualizada.getHora());
@@ -99,12 +103,13 @@ public class CitaService {
                     .findByEstado(Consultorio.Estado.Disponible);
 
             Optional<Consultorio> consultorioAsignado = consultoriosDisponibles.stream()
-                    .filter(c -> c.getEspecialidad().equalsIgnoreCase(especialidad))
+                    .filter(c -> c.getEspecialidad().equals(especialidad))
                     .filter(c -> !idsConsultoriosOcupados.contains(c.getIdConsultorio()))
                     .findFirst();
 
             citaExistente.setConsultorio(consultorioAsignado
-                    .orElseThrow(() -> new RuntimeException("No hay consultorios disponibles para la nueva fecha/hora.")));
+                    .orElseThrow(
+                            () -> new RuntimeException("No hay consultorios disponibles para la nueva fecha/hora.")));
         }
 
         return citaRepository.save(citaExistente);
@@ -145,7 +150,7 @@ public class CitaService {
         List<Horario> horarios = horarioRepository.findByMedico_IdMedicoAndDiaSemana(idMedico, diaSemana);
 
         if (horarios.isEmpty()) {
-            return new ArrayList<>(); 
+            return new ArrayList<>();
         }
 
         List<LocalTime> slotsDisponibles = new ArrayList<>();

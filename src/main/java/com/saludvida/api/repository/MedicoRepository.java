@@ -1,5 +1,6 @@
 package com.saludvida.api.repository;
 
+import com.saludvida.api.model.Especialidad;
 import com.saludvida.api.model.Medico;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,15 +11,13 @@ import java.util.Optional;
 
 @Repository
 public interface MedicoRepository extends JpaRepository<Medico, Integer> {
-
     List<Medico> findByEstado(Medico.Estado estado);
 
     Optional<Medico> findByDni(String dni);
 
-    List<Medico> findByEspecialidad(String especialidad);
+    List<Medico> findByEspecialidad_Nombre(String nombreEspecialidad);
 
-    List<Medico> findByEstadoAndEspecialidad(Medico.Estado estado, String especialidad);
+    List<Medico> findByEspecialidad(Especialidad especialidad);
 
-    @Query("SELECT DISTINCT m.especialidad FROM Medico m")
-    List<String> findDistinctEspecialidades();
+    List<Medico> findByEstadoAndEspecialidad(Medico.Estado estado, Especialidad especialidad);
 }

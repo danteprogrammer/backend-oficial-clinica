@@ -1,6 +1,8 @@
 package com.saludvida.api.service;
 
+import com.saludvida.api.model.Especialidad;
 import com.saludvida.api.model.Tarifario;
+import com.saludvida.api.repository.EspecialidadRepository;
 import com.saludvida.api.repository.TarifarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class TarifarioService {
 
     private final TarifarioRepository tarifarioRepository;
+    private final EspecialidadRepository especialidadRepository;
 
     @Transactional(readOnly = true)
     public List<Tarifario> listarTodos() {
@@ -29,10 +32,18 @@ public class TarifarioService {
 
     @Transactional
     public Tarifario crearTarifa(Tarifario tarifario) {
-        Optional<Tarifario> existente = tarifarioRepository.findByEspecialidad(tarifario.getEspecialidad());
+        if (tarifario.getEspecialidad() == null || tarifario.getEspecialidad().getIdEspecialidad() == null) {
+            throw new IllegalStateException("Debe proporcionar un ID de especialidad.");
+        }
+        Especialidad esp = especialidadRepository.findById(tarifario.getEspecialidad().getIdEspecialidad())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Especialidad no encontrada con ID: " + tarifario.getEspecialidad().getIdEspecialidad()));
+        tarifario.setEspecialidad(esp);
+
+        Optional<Tarifario> existente = tarifarioRepository.findByEspecialidad(esp);
         if (existente.isPresent()) {
             throw new IllegalStateException(
-                    "Ya existe una tarifa para la especialidad: " + tarifario.getEspecialidad());
+                    "Ya existe una tarifa para la especialidad: " + esp.getNombre());
         }
         return tarifarioRepository.save(tarifario);
     }
@@ -40,16 +51,27 @@ public class TarifarioService {
     @Transactional
     public Tarifario actualizarTarifa(Integer id, Tarifario tarifaActualizada) {
         Tarifario tarifaExistente = buscarPorId(id);
-        if (!tarifaExistente.getEspecialidad().equalsIgnoreCase(tarifaActualizada.getEspecialidad())) {
+
+        if (tarifaActualizada.getEspecialidad() == null
+                || tarifaActualizada.getEspecialidad().getIdEspecialidad() == null) {
+            throw new IllegalStateException("Debe proporcionar un ID de especialidad.");
+        }
+        Especialidad espActualizada = especialidadRepository
+                .findById(tarifaActualizada.getEspecialidad().getIdEspecialidad())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Especialidad no encontrada con ID: "
+                                + tarifaActualizada.getEspecialidad().getIdEspecialidad()));
+
+        if (!tarifaExistente.getEspecialidad().equals(espActualizada)) {
             Optional<Tarifario> otraTarifa = tarifarioRepository
-                    .findByEspecialidad(tarifaActualizada.getEspecialidad());
+                    .findByEspecialidad(espActualizada); 
             if (otraTarifa.isPresent() && !otraTarifa.get().getId().equals(id)) {
-                throw new IllegalStateException("La especialidad '" + tarifaActualizada.getEspecialidad()
+                throw new IllegalStateException("La especialidad '" + espActualizada.getNombre() // Corregido
                         + "' ya está asignada a otra tarifa.");
             }
         }
 
-        tarifaExistente.setEspecialidad(tarifaActualizada.getEspecialidad());
+        tarifaExistente.setEspecialidad(espActualizada);
         tarifaExistente.setPrecio(tarifaActualizada.getPrecio());
 
         return tarifarioRepository.save(tarifaExistente);

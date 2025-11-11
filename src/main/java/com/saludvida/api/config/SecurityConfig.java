@@ -77,6 +77,7 @@ public class SecurityConfig {
                                                 .hasAuthority("ADMIN")
                                                 .requestMatchers("/api/admin/usuarios/**").hasAuthority("ADMIN")
                                                 .requestMatchers("/api/admin/horarios/**").hasAuthority("ADMIN")
+                                                .requestMatchers("/api/admin/especialidades/**").hasAuthority("ADMIN")
                                                 .requestMatchers("/api/consultorios/**").hasAuthority("ADMIN")
                                                 .requestMatchers("/api/medicos/**").hasAuthority("ADMIN")
                                                 .anyRequest().authenticated())

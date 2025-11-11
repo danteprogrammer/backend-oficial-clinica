@@ -1,7 +1,9 @@
 package com.saludvida.api.service;
 
+import com.saludvida.api.model.Especialidad;
 import com.saludvida.api.model.Horario;
 import com.saludvida.api.model.Medico;
+import com.saludvida.api.repository.EspecialidadRepository;
 import com.saludvida.api.repository.HorarioRepository;
 import com.saludvida.api.repository.MedicoRepository;
 
@@ -29,6 +31,7 @@ public class MedicoService {
 
     private final MedicoRepository medicoRepository;
     private final HorarioRepository horarioRepository;
+    private final EspecialidadRepository especialidadRepository;
 
     @Transactional(readOnly = true)
     public List<Medico> obtenerTodosLosMedicos() {
@@ -47,7 +50,7 @@ public class MedicoService {
 
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosPorEspecialidad(String especialidad) {
-        return medicoRepository.findByEspecialidad(especialidad);
+        return medicoRepository.findByEspecialidad_Nombre(especialidad);
     }
 
     @Transactional(readOnly = true)
@@ -111,10 +114,15 @@ public class MedicoService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Los apellidos son obligatorios");
         }
-        if (medico.getEspecialidad() == null || medico.getEspecialidad().trim().isEmpty()) {
+        if (medico.getEspecialidad() == null || medico.getEspecialidad().getIdEspecialidad() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "La especialidad es obligatoria");
+                    "La especialidad es obligatoria y debe incluir un 'idEspecialidad'");
         }
+        Especialidad esp = especialidadRepository.findById(medico.getEspecialidad().getIdEspecialidad())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Especialidad no encontrada con ID: " + medico.getEspecialidad().getIdEspecialidad()));
+        medico.setEspecialidad(esp);
+
         medico.setEstado(Medico.Estado.Activo);
         return medicoRepository.save(medico);
     }
@@ -143,8 +151,11 @@ public class MedicoService {
         if (medicoActualizado.getSexo() != null) {
             medico.setSexo(medicoActualizado.getSexo());
         }
-        if (medicoActualizado.getEspecialidad() != null) {
-            medico.setEspecialidad(medicoActualizado.getEspecialidad());
+        if (medicoActualizado.getEspecialidad() != null && medicoActualizado.getEspecialidad().getIdEspecialidad() != null) {
+            Especialidad esp = especialidadRepository.findById(medicoActualizado.getEspecialidad().getIdEspecialidad())
+                    .orElseThrow(() -> new EntityNotFoundException("Especialidad no encontrada con ID: "
+                            + medicoActualizado.getEspecialidad().getIdEspecialidad()));
+            medico.setEspecialidad(esp);
         }
         if (medicoActualizado.getTelefono() != null) {
             medico.setTelefono(medicoActualizado.getTelefono());
@@ -185,9 +196,9 @@ public class MedicoService {
         medico.setEstado(Estado.Inactivo);
         return medicoRepository.save(medico);
     }
-
+    
     @Transactional(readOnly = true)
-    public List<String> obtenerEspecialidades() {
-        return medicoRepository.findDistinctEspecialidades();
+    public List<Especialidad> obtenerEspecialidades() {
+        return especialidadRepository.findAll();
     }
 }
