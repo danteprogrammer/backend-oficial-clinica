@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -31,8 +34,9 @@ public class Medico {
     @Column(name = "sexo")
     private Sexo sexo;
 
-    @Column(name = "especialidad")
-    private String especialidad;
+    @ManyToOne
+    @JoinColumn(name = "especialidad_id", nullable = false)
+    private Especialidad especialidad;
 
     @Column(name = "telefono")
     private String telefono;

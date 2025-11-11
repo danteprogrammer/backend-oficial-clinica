@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,8 +21,9 @@ public class Tarifario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true, nullable = false)
-    private String especialidad;
+    @ManyToOne
+    @JoinColumn(name = "especialidad_id", nullable = false, unique = true)
+    private Especialidad especialidad;
 
     @Column(nullable = false)
     private BigDecimal precio;

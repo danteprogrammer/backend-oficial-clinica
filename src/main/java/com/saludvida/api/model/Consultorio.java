@@ -27,8 +27,9 @@ public class Consultorio {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(name = "especialidad") 
-    private String especialidad;   
+    @ManyToOne
+    @JoinColumn(name = "especialidad_id", nullable = false, unique = true)
+    private Especialidad especialidad;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado")
