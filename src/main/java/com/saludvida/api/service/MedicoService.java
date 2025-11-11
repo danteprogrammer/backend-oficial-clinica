@@ -50,7 +50,7 @@ public class MedicoService {
 
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosPorEspecialidad(String especialidad) {
-        return medicoRepository.findByEspecialidad_Nombre(especialidad);
+        return medicoRepository.findByEspecialidad_NombreAndEstado(especialidad, Medico.Estado.Activo);
     }
 
     @Transactional(readOnly = true)
@@ -63,10 +63,7 @@ public class MedicoService {
         for (int i = 0; i < 15; i++) {
             LocalDate fecha = hoy.plusDays(i);
 
-            String diaDeLaSemana = fecha.getDayOfWeek()
-                    .getDisplayName(
-                            TextStyle.FULL,
-                            new Locale("es", "ES"));
+            String diaDeLaSemana = fecha.getDayOfWeek().toString();
 
             for (Horario horario : horarios) {
 
@@ -132,6 +129,7 @@ public class MedicoService {
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Médico no encontrado con ID: " + id));
+
         if (!medico.getDni().equals(medicoActualizado.getDni())) {
             Optional<Medico> medicoConMismoDni = medicoRepository.findByDni(medicoActualizado.getDni());
             if (medicoConMismoDni.isPresent()) {
@@ -139,6 +137,7 @@ public class MedicoService {
                         "Ya existe otro médico con el DNI: " + medicoActualizado.getDni());
             }
         }
+
         if (medicoActualizado.getDni() != null) {
             medico.setDni(medicoActualizado.getDni());
         }
@@ -151,7 +150,8 @@ public class MedicoService {
         if (medicoActualizado.getSexo() != null) {
             medico.setSexo(medicoActualizado.getSexo());
         }
-        if (medicoActualizado.getEspecialidad() != null && medicoActualizado.getEspecialidad().getIdEspecialidad() != null) {
+        if (medicoActualizado.getEspecialidad() != null
+                && medicoActualizado.getEspecialidad().getIdEspecialidad() != null) {
             Especialidad esp = especialidadRepository.findById(medicoActualizado.getEspecialidad().getIdEspecialidad())
                     .orElseThrow(() -> new EntityNotFoundException("Especialidad no encontrada con ID: "
                             + medicoActualizado.getEspecialidad().getIdEspecialidad()));
@@ -196,7 +196,7 @@ public class MedicoService {
         medico.setEstado(Estado.Inactivo);
         return medicoRepository.save(medico);
     }
-    
+
     @Transactional(readOnly = true)
     public List<Especialidad> obtenerEspecialidades() {
         return especialidadRepository.findAll();

@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @Repository
 public interface MedicoRepository extends JpaRepository<Medico, Integer> {
-    List<Medico> findByEstado(Medico.Estado estado);
+List<Medico> findByEstado(Medico.Estado estado);
 
     Optional<Medico> findByDni(String dni);
 
-    List<Medico> findByEspecialidad_Nombre(String nombreEspecialidad);
+    List<Medico> findByEspecialidad_NombreAndEstado(String nombreEspecialidad, Medico.Estado estado);
 
     List<Medico> findByEspecialidad(Especialidad especialidad);
 

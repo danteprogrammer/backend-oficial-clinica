@@ -1,9 +1,8 @@
 package com.saludvida.api.jwt;
 
-// --- IMPORTACIONES AÑADIDAS POR EL PROFESOR ---
 import com.saludvida.api.model.Medico;
 import com.saludvida.api.model.Usuario;
-// --- FIN DE IMPORTACIONES AÑADIDAS ---
+import org.springframework.security.authentication.DisabledException; 
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -22,11 +21,10 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
-    @Value("${jwt.expiration:86400000}") 
+    @Value("${jwt.expiration:86400000}")
     private long jwtExpiration;
 
     public String getToken(UserDetails userDetails) {
@@ -36,10 +34,16 @@ public class JwtService {
 
         if (userDetails instanceof Usuario) {
             Usuario usuario = (Usuario) userDetails;
-            extraClaims.put("rol", usuario.getRol().getNombre()); 
+            extraClaims.put("rol", usuario.getRol().getNombre());
 
             if (usuario.getMedico() != null) {
                 Medico medico = usuario.getMedico();
+
+                if (medico.getEstado() != Medico.Estado.Activo) {
+                    throw new DisabledException("La cuenta de este médico (" + medico.getNombres() + " "
+                            + medico.getApellidos() + ") está " + medico.getEstado().toString().toUpperCase());
+                }
+
                 Map<String, Object> medicoClaims = new HashMap<>();
                 medicoClaims.put("id", medico.getIdMedico());
                 medicoClaims.put("nombres", medico.getNombres());

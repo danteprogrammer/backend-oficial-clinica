@@ -47,6 +47,12 @@ public class UsuarioService {
         if (dto.getIdMedico() != null) {
             medicoAsociado = medicoRepository.findById(dto.getIdMedico())
                     .orElseThrow(() -> new EntityNotFoundException("Perfil de Médico no encontrado"));
+
+            if (medicoAsociado.getEstado() != Medico.Estado.Activo) {
+                throw new IllegalStateException(
+                        "No se puede crear un usuario para un médico que no esté 'Activo'. El estado actual es: "
+                                + medicoAsociado.getEstado());
+            }
         }
 
         Usuario usuario = Usuario.builder()
@@ -75,6 +81,10 @@ public class UsuarioService {
         if (dto.getIdMedico() != null) {
             medicoAsociado = medicoRepository.findById(dto.getIdMedico())
                     .orElseThrow(() -> new EntityNotFoundException("Perfil de Médico no encontrado"));
+
+            if (medicoAsociado.getEstado() != Medico.Estado.Activo && dto.getEstado().equalsIgnoreCase("ACTIVO")) {
+                throw new IllegalStateException("No se puede asignar un médico inactivo a un usuario activo.");
+            }
         }
 
         usuario.setNombreUsuario(dto.getNombreUsuario());
