@@ -14,21 +14,29 @@ INSERT IGNORE INTO `usuarios` (`id_usuario`, `nombre_usuario`, `clave`, `estado`
 (5, 'triaje', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 5, 'Maria', 'Fernandez', NULL),
 (6, 'laboratorista', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 6, 'Carlos', 'Ruiz', NULL);
 
-INSERT IGNORE INTO `consultorios` (`id_consultorio`, `numero`, `piso`, `descripcion`, `especialidad`, `estado`) VALUES
-(1, '101', 1, 'Consultorio de Cardiología', 'Cardiología', 'Disponible'),
-(2, '102', 1, 'Consultorio de Dermatología', 'Dermatología', 'Disponible'),
-(3, '201', 2, 'Consultorio de Pediatría', 'Pediatría', 'Disponible'),
-(4, '202', 2, 'Consultorio de Traumatología', 'Traumatología', 'Mantenimiento'),
-(5, '301', 3, 'Consultorio de Ginecología', 'Ginecología', 'Disponible'),
-(6, '302', 3, 'Consultorio de Oftalmología', 'Oftalmología', 'Disponible');
+INSERT IGNORE INTO `especialidad` (nombre, descripcion) VALUES
+('Cardiología', 'Atención del corazón'),
+('Dermatología', 'Atención de la piel'),
+('Pediatría', 'Atención de niños'),
+('Traumatología', 'Atención de huesos y lesiones'),
+('Ginecología', 'Atención de la mujer'),
+('Oftalmología', 'Atención de los ojos');
 
-INSERT IGNORE INTO `tarifario` (`especialidad`, `precio`) VALUES
-('Cardiología', 150.00),
-('Dermatología', 120.00),
-('Pediatría', 100.00),
-('Traumatología', 130.00),
-('Ginecología', 140.00),
-('Oftalmología', 110.00);
+INSERT IGNORE INTO `consultorios` (`id_consultorio`, `numero`, `piso`, `descripcion`, `especialidad_id`, `estado`) VALUES
+(1, '101', 1, 'Consultorio de Cardiología', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Cardiología'), 'Disponible'),
+(2, '102', 1, 'Consultorio de Dermatología', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Dermatología'), 'Disponible'),
+(3, '201', 2, 'Consultorio de Pediatría', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Pediatría'), 'Disponible'),
+(4, '202', 2, 'Consultorio de Traumatología', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Traumatología'), 'Mantenimiento'),
+(5, '301', 3, 'Consultorio de Ginecología', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Ginecología'), 'Disponible'),
+(6, '302', 3, 'Consultorio de Oftalmología', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Oftalmología'), 'Disponible');
+
+INSERT IGNORE INTO `tarifario` (`especialidad_id`, `precio`) VALUES
+((SELECT idEspecialidad FROM especialidad WHERE nombre = 'Cardiología'), 150.00),
+((SELECT idEspecialidad FROM especialidad WHERE nombre = 'Dermatología'), 120.00),
+((SELECT idEspecialidad FROM especialidad WHERE nombre = 'Pediatría'), 100.00),
+((SELECT idEspecialidad FROM especialidad WHERE nombre = 'Traumatología'), 130.00),
+((SELECT idEspecialidad FROM especialidad WHERE nombre = 'Ginecología'), 140.00),
+((SELECT idEspecialidad FROM especialidad WHERE nombre = 'Oftalmología'), 110.00);
 
 INSERT IGNORE INTO `paciente` (`id_paciente`, `nombres`, `apellidos`, `dni`, `fecha_nacimiento`, `telefono`, `email`, `direccion`, `estado`, `sexo`) VALUES
 (1, 'Juan', 'Pérez', '10234567', '1985-05-15', '961234567', 'juan.perez@email.com', 'Calle Ficticia 123', 'Activo', 'Masculino'),
@@ -47,13 +55,13 @@ INSERT IGNORE INTO `historiaclinica` (`id_historia_clinica`, `fecha_creacion`, `
 (5, CURDATE(), 5, NULL, NULL, NULL),
 (6, CURDATE(), 6, 'Fractura de brazo', 'Maní', NULL);
 
-INSERT IGNORE INTO `medicos` (`id_medico`, `dni`, `nombres`, `apellidos`, `sexo`, `especialidad`, `telefono`, `email`, `licencia_medica`, `estado`) VALUES
-(1, '40321578', 'Roberto', 'Sánchez', 'Masculino', 'Cardiología', '976543210', 'roberto.sanchez@clinica.com', 'LIC001', 'Activo'),
-(2, '72904561', 'Carmen', 'López', 'Femenino', 'Dermatología', '957012468', 'carmen.lopez@clinica.com', 'LIC002', 'Activo'),
-(3, '55678902', 'Miguel', 'Torres', 'Masculino', 'Pediatría', '948601357', 'miguel.torres@clinica.com', 'LIC003', 'Activo'),
-(4, '31415926', 'Patricia', 'Ramírez', 'Femenino', 'Traumatología', '959887766', 'patricia.ramirez@clinica.com', 'LIC004', 'Activo'),
-(5, '31415937', 'Alejandro', 'Morales', 'Masculino', 'Ginecología', '991122334', 'alejandro.morales@clinica.com', 'LIC005', 'Activo'),
-(6, '31415985', 'Isabel', 'Fernández', 'Femenino', 'Oftalmología', '923456789', 'isabel.fernandez@clinica.com', 'LIC006', 'Activo');
+INSERT IGNORE INTO `medicos` (`id_medico`, `dni`, `nombres`, `apellidos`, `sexo`, `especialidad_id`, `telefono`, `email`, `licencia_medica`, `estado`) VALUES
+(1, '40321578', 'Roberto', 'Sánchez', 'Masculino', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Cardiología'), '976543210', 'roberto.sanchez@clinica.com', 'LIC001', 'Activo'),
+(2, '72904561', 'Carmen', 'López', 'Femenino', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Dermatología'), '957012468', 'carmen.lopez@clinica.com', 'LIC002', 'Activo'),
+(3, '55678902', 'Miguel', 'Torres', 'Masculino', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Pediatría'), '948601357', 'miguel.torres@clinica.com', 'LIC003', 'Activo'),
+(4, '31415926', 'Patricia', 'Ramírez', 'Femenino', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Traumatología'), '959887766', 'patricia.ramirez@clinica.com', 'LIC004', 'Activo'),
+(5, '31415937', 'Alejandro', 'Morales', 'Masculino', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Ginecología'), '991122334', 'alejandro.morales@clinica.com', 'LIC005', 'Activo'),
+(6, '31415985', 'Isabel', 'Fernández', 'Femenino', (SELECT idEspecialidad FROM especialidad WHERE nombre = 'Oftalmología'), '923456789', 'isabel.fernandez@clinica.com', 'LIC006', 'Activo');
 
 -- Insertar horarios para los médicos
 INSERT IGNORE INTO `horarios` (`id_medico`, `dia_semana`, `hora_inicio`, `hora_fin`) VALUES
