@@ -17,8 +17,6 @@ import com.saludvida.api.model.Medico.Estado;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.TextStyle;
-import java.util.Locale;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;

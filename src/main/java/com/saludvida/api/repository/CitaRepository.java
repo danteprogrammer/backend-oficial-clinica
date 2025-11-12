@@ -1,7 +1,6 @@
 package com.saludvida.api.repository;
 
 import com.saludvida.api.model.Cita;
-import com.saludvida.api.model.Paciente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

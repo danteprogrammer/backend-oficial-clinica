@@ -72,10 +72,6 @@ public class JwtService {
                 .compact();
     }
 
-    private String buildToken(UserDetails userDetails, long expiration) {
-        return buildToken(new HashMap<>(), userDetails, expiration);
-    }
-
     private Key getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
