@@ -93,6 +93,7 @@ public class SecurityConfig {
                                 .build();
         }
 
+        // Actualización para forzar redespliegue en Railway
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
