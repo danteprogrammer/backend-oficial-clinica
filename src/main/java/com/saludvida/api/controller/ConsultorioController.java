@@ -2,6 +2,8 @@ package com.saludvida.api.controller;
 
 import com.saludvida.api.model.Consultorio;
 import com.saludvida.api.service.ConsultorioService;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +66,8 @@ public class ConsultorioController {
     }
 
     @PutMapping("/{id}/estado")
-    public ResponseEntity<?> actualizarEstadoConsultorio(@PathVariable Integer id, @RequestBody Map<String, String> request) {
+    public ResponseEntity<?> actualizarEstadoConsultorio(@PathVariable Integer id,
+            @RequestBody Map<String, String> request) {
         try {
             String nuevoEstado = request.get("estado");
             Consultorio.Estado estadoEnum = Consultorio.Estado.valueOf(nuevoEstado);
@@ -106,11 +109,40 @@ public class ConsultorioController {
             response.put("data", consultorioCreado);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (IllegalArgumentException | EntityNotFoundException e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
             errorResponse.put("message", e.getMessage());
             return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarConsultorio(@PathVariable Integer id, @RequestBody Consultorio consultorioData) {
+        try {
+            Consultorio consultorioActualizado = consultorioService.actualizarConsultorio(id, consultorioData);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Consultorio actualizado correctamente");
+            response.put("data", consultorioActualizado);
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException | EntityNotFoundException e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", "Error interno del servidor: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 
