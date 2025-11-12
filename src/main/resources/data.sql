@@ -9,10 +9,10 @@ INSERT IGNORE INTO `roles` (`id_rol`, `nombre`, `descripcion`) VALUES
 INSERT IGNORE INTO `usuarios` (`id_usuario`, `nombre_usuario`, `clave`, `estado`, `id_rol`, `nombres`, `apellidos`, `id_medico`) VALUES
 (1, 'admin', '$2b$12$tVebN1WpmhtD48TQDi7W1ea1dNYOF2iig/OAa4sClnHvu4w.Ygqo6', 'ACTIVO', 1, 'Admin', 'Principal', NULL),
 (2, 'recepcionista', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 2, 'Ana', 'Gomez', NULL),
-(3, 'medico', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 3, 'Roberto', 'Sánchez', 1),
-(4, 'caja', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 4, 'Luis', 'Perez', NULL),
-(5, 'triaje', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 5, 'Maria', 'Fernandez', NULL),
-(6, 'laboratorista', '$2b$12$p5StX2XT8QTz4sT0rM0vfeHIy2RDAjhAwTDsmUUXvwnE3VBkULL5q', 'ACTIVO', 6, 'Carlos', 'Ruiz', NULL);
+(3, 'medico', '$2a$12$JhFPilszplYY65AtmQKKIuv4.1HIcmd2dZROcMPHC/t79NXgQlIVu', 'ACTIVO', 3, 'Roberto', 'Sánchez', 1),
+(4, 'caja', '$2a$12$v/eTR0ClKhE.T5GP6yY1wOi9NKyyjoxX3Qrn2W/3RtJWg1RAv9WFm', 'ACTIVO', 4, 'Luis', 'Perez', NULL),
+(5, 'triaje', '$2a$12$2ekErl2NE1KSJfi8cFLTfOosapTHx.sKo6B0WJdcwp2RSXQjgde7O', 'ACTIVO', 5, 'Maria', 'Fernandez', NULL),
+(6, 'laboratorista', '$2a$12$LXiWYzGQL5RGJukp4jKo0uN5yohEvvl0RMlNHidE40n1wURnZ5HSi', 'ACTIVO', 6, 'Carlos', 'Ruiz', NULL);
 
 INSERT IGNORE INTO `especialidad` (nombre, descripcion) VALUES
 ('Cardiología', 'Atención del corazón'),
