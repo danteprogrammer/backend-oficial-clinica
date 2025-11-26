@@ -18,15 +18,15 @@ public class DashboardService {
     private final CitaRepository citaRepository;
 
     @Transactional(readOnly = true)
-    public DashboardStatsDto getDashboardStats() {
-        LocalDate hoy = LocalDate.now();
+    public DashboardStatsDto getDashboardStats(LocalDate fechaConsulta) {
+        LocalDate fecha = (fechaConsulta != null) ? fechaConsulta : LocalDate.now();
 
-        BigDecimal ingresosHoy = citaRepository.sumIngresosPorFecha(hoy);
-        Long pacientesAtendidosHoy = citaRepository.countCitasPagadasPorFecha(hoy);
-        List<EspecialidadConteoDto> consultasPorEspecialidad = citaRepository.countConsultasPorEspecialidadHoy(hoy);
+        BigDecimal ingresosHoy = citaRepository.sumIngresosPorFecha(fecha);
+        Long pacientesAtendidosHoy = citaRepository.countCitasPagadasPorFecha(fecha);
+        List<EspecialidadConteoDto> consultasPorEspecialidad = citaRepository.countConsultasPorEspecialidadHoy(fecha);
 
         DashboardStatsDto stats = new DashboardStatsDto();
-        stats.setIngresosHoy(ingresosHoy);
+        stats.setIngresosHoy(ingresosHoy != null ? ingresosHoy : BigDecimal.ZERO);
         stats.setPacientesAtendidosHoy(pacientesAtendidosHoy);
         stats.setConsultasPorEspecialidadHoy(consultasPorEspecialidad);
 
