@@ -1,7 +1,7 @@
 package com.saludvida.api.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+/*import org.springframework.beans.factory.annotation.Value;*/
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -12,8 +12,9 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
-    private String remitente;
+    /*@Value("${spring.mail.username}")
+    private String remitente;*/
+    private String remitente = "danter9462@gmail.com";
 
     public void enviarCredenciales(String destinatario, String username, String password) {
         SimpleMailMessage message = new SimpleMailMessage();
