@@ -81,20 +81,11 @@ public class ConsultorioController {
 
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", "Estado no válido: " + request.get("estado"));
-            return ResponseEntity.badRequest().body(errorResponse);
+            return generarRespuestaError("Estado no válido: " + request.get("estado"), HttpStatus.BAD_REQUEST);
         } catch (RuntimeException e) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            return generarRespuestaError(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", "Error interno del servidor");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return generarRespuestaError("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -110,15 +101,9 @@ public class ConsultorioController {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException | EntityNotFoundException e) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            return generarRespuestaError(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            return generarRespuestaError(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -134,15 +119,9 @@ public class ConsultorioController {
 
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException | EntityNotFoundException e) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            return generarRespuestaError(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", "Error interno del servidor: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return generarRespuestaError("Error interno del servidor: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -157,15 +136,16 @@ public class ConsultorioController {
 
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            return generarRespuestaError(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", "Error interno del servidor");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return generarRespuestaError("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private ResponseEntity<Map<String, Object>> generarRespuestaError(String mensaje, HttpStatus status) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("success", false);
+        errorResponse.put("message", mensaje);
+        return ResponseEntity.status(status).body(errorResponse);
     }
 }

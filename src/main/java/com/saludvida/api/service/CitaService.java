@@ -50,17 +50,7 @@ public class CitaService {
 
         Especialidad especialidad = medico.getEspecialidad();
 
-        List<Cita> citasOcupadas = citaRepository.findByFechaAndHora(cita.getFecha(), cita.getHora());
-        List<Integer> idsConsultoriosOcupados = citasOcupadas.stream()
-                .map(c -> c.getConsultorio().getIdConsultorio())
-                .collect(Collectors.toList());
-
-        List<Consultorio> consultoriosDisponibles = consultorioRepository.findByEstado(Consultorio.Estado.Disponible);
-
-        Optional<Consultorio> consultorioAsignado = consultoriosDisponibles.stream()
-                .filter(c -> c.getEspecialidad().equals(especialidad))
-                .filter(c -> !idsConsultoriosOcupados.contains(c.getIdConsultorio()))
-                .findFirst();
+        Optional<Consultorio> consultorioAsignado = buscarConsultorioDisponible(especialidad, cita.getFecha(), cita.getHora());
 
         if (consultorioAsignado.isPresent()) {
             cita.setConsultorio(consultorioAsignado.get());
@@ -88,24 +78,13 @@ public class CitaService {
 
         if (!citaExistente.getFecha().equals(citaActualizada.getFecha())
                 || !citaExistente.getHora().equals(citaActualizada.getHora())) {
+            
             Medico medico = medicoRepository.findById(citaActualizada.getMedico().getIdMedico())
                     .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado"));
 
             Especialidad especialidad = medico.getEspecialidad();
 
-            List<Cita> citasOcupadas = citaRepository.findByFechaAndHora(citaActualizada.getFecha(),
-                    citaActualizada.getHora());
-            List<Integer> idsConsultoriosOcupados = citasOcupadas.stream()
-                    .map(c -> c.getConsultorio().getIdConsultorio())
-                    .collect(Collectors.toList());
-
-            List<Consultorio> consultoriosDisponibles = consultorioRepository
-                    .findByEstado(Consultorio.Estado.Disponible);
-
-            Optional<Consultorio> consultorioAsignado = consultoriosDisponibles.stream()
-                    .filter(c -> c.getEspecialidad().equals(especialidad))
-                    .filter(c -> !idsConsultoriosOcupados.contains(c.getIdConsultorio()))
-                    .findFirst();
+            Optional<Consultorio> consultorioAsignado = buscarConsultorioDisponible(especialidad, citaActualizada.getFecha(), citaActualizada.getHora());
 
             citaExistente.setConsultorio(consultorioAsignado
                     .orElseThrow(
@@ -113,6 +92,22 @@ public class CitaService {
         }
 
         return citaRepository.save(citaExistente);
+    }
+
+    private Optional<Consultorio> buscarConsultorioDisponible(Especialidad especialidad, LocalDate fecha, LocalTime hora) {
+        List<Cita> citasOcupadas = citaRepository.findByFechaAndHora(fecha, hora);
+        
+        List<Integer> idsConsultoriosOcupados = citasOcupadas.stream()
+                .map(c -> c.getConsultorio().getIdConsultorio())
+                .collect(Collectors.toList());
+
+        List<Consultorio> consultoriosDisponibles = consultorioRepository
+                .findByEstado(Consultorio.Estado.Disponible);
+
+        return consultoriosDisponibles.stream()
+                .filter(c -> c.getEspecialidad().equals(especialidad))
+                .filter(c -> !idsConsultoriosOcupados.contains(c.getIdConsultorio()))
+                .findFirst();
     }
 
     @Transactional
