@@ -19,4 +19,6 @@ List<Medico> findByEstado(Medico.Estado estado);
     List<Medico> findByEspecialidad(Especialidad especialidad);
 
     List<Medico> findByEstadoAndEspecialidad(Medico.Estado estado, Especialidad especialidad);
+
+    Optional<Medico> findByEmail(String email);
 }

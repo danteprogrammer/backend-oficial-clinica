@@ -3,11 +3,11 @@ package com.saludvida.api.service;
 import com.saludvida.api.dto.AuthResponse;
 import com.saludvida.api.dto.LoginRequest;
 import com.saludvida.api.jwt.JwtService;
+import com.saludvida.api.model.Usuario; // Importante importar tu modelo
 import com.saludvida.api.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,12 +19,18 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse login(LoginRequest request) {
-        authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        UserDetails user = usuarioRepository.findByNombreUsuario(request.getUsername()).orElseThrow();
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+        );
+
+        Usuario user = usuarioRepository.findByNombreUsuario(request.getUsername())
+                .orElseThrow();
+
         String token = jwtService.getToken(user);
+
         return AuthResponse.builder()
                 .token(token)
+                .requiereCambioPassword(user.isCambioPasswordObligatorio()) 
                 .build();
     }
 }

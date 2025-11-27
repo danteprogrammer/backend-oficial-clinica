@@ -43,6 +43,10 @@ public class Usuario implements UserDetails {
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;
 
+    @Builder.Default
+        @Column(name = "cambio_password_obligatorio", nullable = false)
+        private boolean cambioPasswordObligatorio = false;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_medico", referencedColumnName = "id_medico", nullable = true)
     private Medico medico;
