@@ -17,7 +17,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "usuarios", uniqueConstraints = { @UniqueConstraint(columnNames = { "nombre_usuario" }) })
+@Table(name = "usuarios", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "nombre_usuario" }),
+        @UniqueConstraint(columnNames = { "email" }) 
+})
 public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +29,9 @@ public class Usuario implements UserDetails {
 
     @Column(name = "nombre_usuario", nullable = false)
     private String nombreUsuario;
+
+    @Column(name = "email", nullable = false)
+    private String email;
 
     @Column(nullable = false)
     private String clave;
@@ -44,8 +50,8 @@ public class Usuario implements UserDetails {
     private Rol rol;
 
     @Builder.Default
-        @Column(name = "cambio_password_obligatorio", nullable = false)
-        private boolean cambioPasswordObligatorio = false;
+    @Column(name = "cambio_password_obligatorio", nullable = false)
+    private boolean cambioPasswordObligatorio = false;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_medico", referencedColumnName = "id_medico", nullable = true)

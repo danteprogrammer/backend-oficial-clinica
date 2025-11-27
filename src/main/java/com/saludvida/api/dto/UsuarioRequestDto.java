@@ -8,6 +8,7 @@ public class UsuarioRequestDto {
     private String clave; 
     private String nombres;
     private String apellidos;
+    private String email;
     private String estado; 
     private Integer idRol;
     private Integer idMedico; 

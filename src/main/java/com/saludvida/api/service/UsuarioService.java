@@ -48,6 +48,10 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioResponseDto crearUsuario(UsuarioRequestDto dto) {
+        if (usuarioRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new IllegalStateException("El correo electrónico ya está en uso por otro usuario.");
+        }
+
         Rol rol = rolRepository.findById(dto.getIdRol())
                 .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado"));
 
@@ -57,8 +61,7 @@ public class UsuarioService {
                     .orElseThrow(() -> new EntityNotFoundException("Perfil de Médico no encontrado"));
 
             if (medicoAsociado.getEstado() != Medico.Estado.Activo) {
-                throw new IllegalStateException(
-                        "No se puede crear un usuario para un médico que no esté 'Activo'.");
+                throw new IllegalStateException("No se puede crear un usuario para un médico que no esté 'Activo'.");
             }
         }
 
@@ -72,6 +75,7 @@ public class UsuarioService {
                 .clave(passwordEncoder.encode(passwordPlano)) 
                 .nombres(dto.getNombres())
                 .apellidos(dto.getApellidos())
+                .email(dto.getEmail()) 
                 .estado(Usuario.Estado.valueOf(dto.getEstado().toUpperCase()))
                 .rol(rol)
                 .medico(medicoAsociado)
@@ -80,8 +84,8 @@ public class UsuarioService {
 
         Usuario guardado = usuarioRepository.save(usuario);
 
-        if (medicoAsociado != null && medicoAsociado.getEmail() != null && !medicoAsociado.getEmail().isEmpty()) {
-            emailService.enviarCredenciales(medicoAsociado.getEmail(), dto.getNombreUsuario(), passwordPlano);
+        if (guardado.getEmail() != null && !guardado.getEmail().isEmpty()) {
+            emailService.enviarCredenciales(guardado.getEmail(), guardado.getUsername(), passwordPlano);
         }
 
         return new UsuarioResponseDto(guardado);
@@ -108,6 +112,7 @@ public class UsuarioService {
         usuario.setNombreUsuario(dto.getNombreUsuario());
         usuario.setNombres(dto.getNombres());
         usuario.setApellidos(dto.getApellidos());
+        usuario.setEmail(dto.getEmail()); 
         usuario.setEstado(Usuario.Estado.valueOf(dto.getEstado().toUpperCase()));
         usuario.setRol(rol);
         usuario.setMedico(medicoAsociado);
@@ -130,17 +135,12 @@ public class UsuarioService {
         return new UsuarioResponseDto(actualizado);
     }
 
-
     @Transactional
     public void procesarOlvidoPassword(String email) {
-        Optional<Medico> medicoOpt = medicoRepository.findByEmail(email);
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
         
-        Usuario usuario = null;
-        if (medicoOpt.isPresent()) {
-            usuario = usuarioRepository.findByMedico(medicoOpt.get()).orElse(null);
-        }
-
-        if (usuario != null) {
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
             String token = UUID.randomUUID().toString();
             
             tokenRepository.deleteByUsuario(usuario);
@@ -152,7 +152,7 @@ public class UsuarioService {
                     .build();
             
             tokenRepository.save(myToken);
-            emailService.enviarEnlaceRecuperacion(email, token);
+            emailService.enviarEnlaceRecuperacion(usuario.getEmail(), token);
         }
     }
 
