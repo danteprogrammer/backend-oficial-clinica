@@ -18,6 +18,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final UsuarioService usuarioService; 
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
@@ -28,9 +29,9 @@ public class AuthController {
         String email = payload.get("email");
         try {
             usuarioService.procesarOlvidoPassword(email);
-            return ResponseEntity.ok("Si el correo existe, se han enviado las instrucciones.");
+            return ResponseEntity.ok(Map.of("message", "Si el correo existe, se han enviado las instrucciones."));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error en la solicitud");
+            return ResponseEntity.badRequest().body(Map.of("message", "Error en la solicitud"));
         }
     }
 
@@ -38,9 +39,9 @@ public class AuthController {
     public ResponseEntity<?> resetPassword(@RequestBody CambioPasswordDto dto) {
         try {
             usuarioService.cambiarPasswordConToken(dto.getToken(), dto.getNewPassword());
-            return ResponseEntity.ok("Contraseña actualizada correctamente.");
+            return ResponseEntity.ok(Map.of("message", "Contraseña actualizada correctamente."));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -49,9 +50,9 @@ public class AuthController {
         String newPassword = payload.get("newPassword");
         try {
             usuarioService.cambiarPasswordAutenticado(principal.getName(), newPassword);
-            return ResponseEntity.ok("Contraseña actualizada exitosamente.");
+            return ResponseEntity.ok(Map.of("message", "Contraseña actualizada exitosamente."));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al cambiar la contraseña.");
+            return ResponseEntity.badRequest().body(Map.of("message", "Error al cambiar la contraseña."));
         }
     }
 }
