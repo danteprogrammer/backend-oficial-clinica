@@ -25,15 +25,15 @@ public class SeguroMedicoService {
 
         String aseguradora = datosSeguroInput != null && datosSeguroInput.getNombreAseguradora() != null
                 ? datosSeguroInput.getNombreAseguradora()
-                : (seguroRegistrado != null ? seguroRegistrado.getNombreAseguradora() : null);
+                : seguroRegistrado != null ? seguroRegistrado.getNombreAseguradora() : null;
         
         String poliza = datosSeguroInput != null && datosSeguroInput.getNumeroPoliza() != null
                 ? datosSeguroInput.getNumeroPoliza()
-                : (seguroRegistrado != null ? seguroRegistrado.getNumeroPoliza() : null);
+                : seguroRegistrado != null ? seguroRegistrado.getNumeroPoliza() : null;
         
         String cobertura = datosSeguroInput != null && datosSeguroInput.getCobertura() != null
                 ? datosSeguroInput.getCobertura()
-                : (seguroRegistrado != null ? seguroRegistrado.getCobertura() : null);
+                : seguroRegistrado != null ? seguroRegistrado.getCobertura() : null;
 
         DatosSeguroDto datosSeguroRespuesta = new DatosSeguroDto(aseguradora, poliza, cobertura);
 
