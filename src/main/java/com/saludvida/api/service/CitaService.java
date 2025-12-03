@@ -78,7 +78,7 @@ public class CitaService {
 
         if (!citaExistente.getFecha().equals(citaActualizada.getFecha())
                 || !citaExistente.getHora().equals(citaActualizada.getHora())) {
-            
+             
             Medico medico = medicoRepository.findById(citaActualizada.getMedico().getIdMedico())
                     .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado"));
 
@@ -96,7 +96,7 @@ public class CitaService {
 
     private Optional<Consultorio> buscarConsultorioDisponible(Especialidad especialidad, LocalDate fecha, LocalTime hora) {
         List<Cita> citasOcupadas = citaRepository.findByFechaAndHora(fecha, hora);
-        
+         
         List<Integer> idsConsultoriosOcupados = citasOcupadas.stream()
                 .map(c -> c.getConsultorio().getIdConsultorio())
                 .collect(Collectors.toList());
@@ -131,7 +131,7 @@ public class CitaService {
         return citaRepository.findByPaciente_IdPaciente(pacienteId, pageable);
     }
 
-    public Page<Cita> buscarCitasPorFecha(java.time.LocalDate fecha, Pageable pageable) {
+    public Page<Cita> buscarCitasPorFecha(LocalDate fecha, Pageable pageable) {
         return citaRepository.findByFecha(fecha, pageable);
     }
 

@@ -72,7 +72,7 @@ public class CitaController {
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size); 
         return ResponseEntity.ok(
-                citaService.buscarCitasPorFecha(java.time.LocalDate.parse(fecha), pageable));
+                citaService.buscarCitasPorFecha(LocalDate.parse(fecha), pageable));
     }
 
     @PutMapping("/{id}")

@@ -58,7 +58,7 @@ public class FacturacionService {
                 String consultorioNum = cita.getConsultorio() != null ? cita.getConsultorio().getNumero() : "N/A";
                 String consultorioDesc = cita.getConsultorio() != null ? cita.getConsultorio().getDescripcion() : "N/A";
 
-                String tituloMedico = (cita.getMedico().getSexo() == Medico.Sexo.Femenino ? "Dra. " : "Dr. ");
+                String tituloMedico = cita.getMedico().getSexo() == Medico.Sexo.Femenino ? "Dra. " : "Dr. ";
 
                 return new CitaParaFacturacionDto(
                                 cita.getIdCita(),

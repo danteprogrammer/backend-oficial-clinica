@@ -23,13 +23,15 @@ public class SeguroMedicoService {
 
         SeguroMedico seguroRegistrado = seguroMedicoRepository.findByPaciente_IdPaciente(idPaciente).orElse(null);
 
-        String aseguradora = (datosSeguroInput != null && datosSeguroInput.getNombreAseguradora() != null)
+        String aseguradora = datosSeguroInput != null && datosSeguroInput.getNombreAseguradora() != null
                 ? datosSeguroInput.getNombreAseguradora()
                 : (seguroRegistrado != null ? seguroRegistrado.getNombreAseguradora() : null);
-        String poliza = (datosSeguroInput != null && datosSeguroInput.getNumeroPoliza() != null)
+        
+        String poliza = datosSeguroInput != null && datosSeguroInput.getNumeroPoliza() != null
                 ? datosSeguroInput.getNumeroPoliza()
                 : (seguroRegistrado != null ? seguroRegistrado.getNumeroPoliza() : null);
-        String cobertura = (datosSeguroInput != null && datosSeguroInput.getCobertura() != null)
+        
+        String cobertura = datosSeguroInput != null && datosSeguroInput.getCobertura() != null
                 ? datosSeguroInput.getCobertura()
                 : (seguroRegistrado != null ? seguroRegistrado.getCobertura() : null);
 

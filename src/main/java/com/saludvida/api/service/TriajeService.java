@@ -40,7 +40,7 @@ public class TriajeService {
         if (triajeDto.getPeso() != null && triajeDto.getAltura() != null && triajeDto.getAltura() > 0) {
             double alturaEnMetros = triajeDto.getAltura() / 100.0;
             double imc = triajeDto.getPeso() / (alturaEnMetros * alturaEnMetros);
-            BigDecimal imcRedondeado = new BigDecimal(imc).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal imcRedondeado = BigDecimal.valueOf(imc).setScale(2, RoundingMode.HALF_UP);
             nuevoTriaje.setImc(imcRedondeado.doubleValue());
         }
 
